@@ -44,7 +44,9 @@ class AttendanceServiceTest {
 
         User student = new User();
         student.setId(2L);
-        student.setName("John");
+        student.setFirstName("John");
+        student.setLastName("Doe");
+        student.setRole(Role.STUDENT);
 
         AttendanceRequest request = new AttendanceRequest();
         request.studentId = 2L;

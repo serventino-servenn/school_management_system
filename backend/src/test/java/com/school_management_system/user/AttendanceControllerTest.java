@@ -75,7 +75,8 @@ class AttendanceControllerTest {
         // 2. Setup Real Security Entities for Authentication Contexts
         User teacherEntity = new User();
         teacherEntity.setId(5L);
-        teacherEntity.setName("Professor Smith");
+        teacherEntity.setFirstName("Smith");
+        teacherEntity.setLastName("Johnson");
         teacherEntity.setRole(Role.TEACHER);
         mockTeacherPrincipal = new CustomUserDetails(teacherEntity);
 

@@ -50,7 +50,8 @@ class AuthServiceTest {
 
         user = new User();
         user.setId(1L);
-        user.setName("John Doe");
+        user.setFirstName("John");
+        user.setLastName("Doe");
         user.setEmail("john@test.com");
         user.setPassword("encodedPassword");
         user.setRole(Role.STUDENT);

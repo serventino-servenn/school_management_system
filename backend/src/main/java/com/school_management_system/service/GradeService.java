@@ -107,7 +107,7 @@ public class GradeService {
         GradeResponse response = new GradeResponse();
          response.id = grade.getId();
         response.studentId = grade.getStudent().getId();
-        response.studentName = grade.getStudent().getName();
+        response.studentName = grade.getStudent().getFirstName() + " " + grade.getStudent().getLastName();      
         response.courseId = grade.getCourse().getId();
         response.courseTitle = grade.getCourse().getTitle();
         response.assessmentName = grade.getAssessmentName();

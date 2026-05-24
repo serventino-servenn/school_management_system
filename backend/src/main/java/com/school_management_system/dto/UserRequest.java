@@ -9,8 +9,11 @@ import jakarta.validation.constraints.Size;
 
 public class UserRequest {
 
-    @NotBlank(message = "Name is required")
-    public String name;
+    @NotBlank(message = "First name is required")
+    public String firstName;
+
+    @NotBlank(message = "Last name is required")
+    public String lastName;
 
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")

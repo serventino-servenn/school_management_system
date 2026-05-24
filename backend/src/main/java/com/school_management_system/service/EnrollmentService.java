@@ -58,7 +58,7 @@ public class EnrollmentService {
         EnrollmentResponse r = new EnrollmentResponse();
         r.id = e.getId();
         r.studentId = e.getStudent().getId();
-        r.studentName = e.getStudent().getName();
+        r.studentName = e.getStudent().getFirstName() + " " + e.getStudent().getLastName();
         r.courseId = e.getCourse().getId();
         r.courseTitle = e.getCourse().getTitle();
         r.enrolledAt = e.getEnrolledAt();

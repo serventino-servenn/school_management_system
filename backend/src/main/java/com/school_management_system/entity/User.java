@@ -20,8 +20,11 @@ public class User {
     private Long id;
      
     @NotBlank
-    private String name;
-    
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
     @Email
     @NotBlank
     @Column(unique = true)

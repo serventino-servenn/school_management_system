@@ -39,7 +39,8 @@ class UserServiceTest {
     void setUp() {
 
         userRequest = new UserRequest();
-        userRequest.name = "John Doe";
+        userRequest.firstName = "John";
+        userRequest.lastName = "Doe";
         userRequest.email = "john@test.com";
         userRequest.password = "1234";
         userRequest.role = Role.STUDENT;
@@ -57,7 +58,8 @@ class UserServiceTest {
 
         User savedUser = new User();
         savedUser.setId(1L);
-        savedUser.setName(userRequest.name);
+        savedUser.setFirstName(userRequest.firstName);
+        savedUser.setLastName(userRequest.lastName);
         savedUser.setEmail(userRequest.email);
         savedUser.setPassword("encodedPassword");
         savedUser.setRole(userRequest.role);
@@ -70,7 +72,7 @@ class UserServiceTest {
 
         assertNotNull(response);
         assertEquals(1L, response.id);
-        assertEquals("John Doe", response.name);
+        assertEquals("John Doe", response.firstName + " " + response.lastName);
         assertEquals("john@test.com", response.email);
         assertEquals(Role.STUDENT, response.role);
 

@@ -31,13 +31,10 @@ const Register = () => {
     try {
       // 2. Call your Axios Service
       const response = await register(formData);
-       console.log(response)
-      // 3. Handle the JWT and Redirect
-      // Axios returns the backend's AuthenticationResponse in response.data
-      if (response.data && response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        navigate('/login'); 
+      if (response.status === 200) {
+        navigate('/dashboard'); 
       }
+        
     } catch (err) {
       // 4. Capture the message from your GlobalExceptionHandler
       const errorMessage = err.response?.data?.message || "Registration failed. Please try again.";
@@ -94,6 +91,7 @@ const Register = () => {
           <div className="grid grid-cols-2 gap-4">
             <input 
               name="firstName" 
+              value={formData.firstName}
               placeholder="First Name" 
               required 
               onChange={handleChange}
@@ -101,6 +99,7 @@ const Register = () => {
             />
             <input 
               name="lastName" 
+              value={formData.lastName}
               placeholder="Last Name" 
               required 
               onChange={handleChange}

@@ -110,7 +110,8 @@ class RbacIntegrationTest {
         UserRequest registerRequest =
                 new UserRequest();
 
-        registerRequest.name = "Test User";
+        registerRequest.firstName = "John";
+        registerRequest.lastName = "Doe";
         registerRequest.email = email;
         registerRequest.password = "1234";
         registerRequest.role = role;

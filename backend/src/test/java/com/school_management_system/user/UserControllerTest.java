@@ -51,7 +51,8 @@ class UserControllerTest {
             throws Exception {
 
         UserRequest registerRequest = new UserRequest();
-        registerRequest.name = "John Doe";
+        registerRequest.firstName = "John";
+        registerRequest.lastName = "Doe";
         registerRequest.email = "secure@test.com";
         registerRequest.password = "1234";
         registerRequest.role = Role.STUDENT;

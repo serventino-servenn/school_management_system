@@ -57,7 +57,7 @@ public class CourseService {
         r.title = c.getTitle();
         r.description = c.getDescription();
         r.teacherId = c.getTeacher().getId();
-        r.teacherName = c.getTeacher().getName();
+        r.teacherName = c.getTeacher().getFirstName() + " " + c.getTeacher().getLastName();
         return r;
     }
 }

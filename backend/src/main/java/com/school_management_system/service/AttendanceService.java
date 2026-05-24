@@ -110,13 +110,13 @@ public class AttendanceService {
                 attendance.getStudent().getId();
 
         response.studentName =
-                attendance.getStudent().getName();
+                attendance.getStudent().getFirstName() + " " + attendance.getStudent().getLastName();
 
         response.teacherId =
                 attendance.getTeacher().getId();
 
         response.teacherName =
-                attendance.getTeacher().getName();
+                attendance.getTeacher().getFirstName() + " " + attendance.getTeacher().getLastName();
 
         response.courseId =
                 attendance.getCourse().getId();

@@ -29,7 +29,8 @@ class AuthControllerTest {
     void shouldRegisterUserSuccessfully() throws Exception {
 
         UserRequest request = new UserRequest();
-        request.name = "John Doe";
+        request.firstName = "John";
+        request.lastName = "Doe";
         request.email = "john@test.com";
         request.password = "1234";
         request.role = Role.STUDENT;
@@ -49,7 +50,8 @@ class AuthControllerTest {
     void shouldFailValidationWhenRegisteringUser() throws Exception {
 
         UserRequest request = new UserRequest();
-        request.name = "";
+        request.firstName = "John";
+        request.lastName = "Doe";
         request.email = "invalid-email";
         request.password = "1";
 
@@ -66,7 +68,8 @@ class AuthControllerTest {
     void shouldLoginSuccessfully() throws Exception {
 
         UserRequest registerRequest = new UserRequest();
-        registerRequest.name = "John Doe";
+        registerRequest.firstName = "John";
+        registerRequest.lastName = "Doe";
         registerRequest.email = "login@test.com";
         registerRequest.password = "1234";
         registerRequest.role = Role.STUDENT;

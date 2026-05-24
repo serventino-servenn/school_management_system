@@ -19,9 +19,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<DashboardLayout />} />
 
             {/* Admin Routes - Nested inside the layout */}
-            <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="/admin" element={<AdminHome />}>
               <Route index element={<AdminHome />} /> {/* This is the default dashboard page */}
               <Route path="students" element={<StudentList />} />
               <Route path="courses" element={<CourseList />} />
