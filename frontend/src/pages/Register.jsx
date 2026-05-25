@@ -32,7 +32,14 @@ const Register = () => {
       // 2. Call your Axios Service
       const response = await register(formData);
       if (response.status === 200) {
-        navigate('/dashboard'); 
+        const role = response.data.role; 
+        if (role === 'ADMIN'){
+          navigate('/admin');
+        } else if (role === 'TEACHER') {
+          navigate('/teacher');
+        } else {
+          navigate('/student');
+        }
       }
         
     } catch (err) {
