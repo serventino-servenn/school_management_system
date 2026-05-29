@@ -1,7 +1,13 @@
 
 const AdminHome = () => {
+    
+    const stats = [
+        { label: 'Total Students', value: '1,248', change: '+12% this month', icon: <Users size={24} className="text-blue-600" />, bg: 'bg-blue-50' },
+        { label: 'Active Courses', value: '42', change: '3 new cohorts', icon: <BookOpen size={24} className="text-indigo-600" />, bg: 'bg-indigo-50' },
+        { label: 'Revenue Collected', value: '$48,250', change: '94% invoice fulfillment', icon: <CreditCard size={24} className="text-emerald-600" />, bg: 'bg-emerald-50' },
+    ];
     return (
-        <div className="p-6">
+        <div className="space-y-8">
             <h2 className="text-3xl font-bold mb-4">Welcome to the Admin Dashboard</h2>
             <p className="text-slate-600 mb-6">
                 From here, you can manage students, courses, and view attendance records. Use the sidebar to navigate through different sections of the admin panel.

@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route ,Outlet} from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -16,19 +16,35 @@ import CourseList from './pages/CourseList';
 import TeacherHome from './pages/TeacherHome'; 
 import StudentHome from './pages/StudentHome';
 
+import { AuthProvider } from './context/AuthContext';
+
+const  PublicLayout =  () => {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 function App() {
   return (
-    <>
-      <Navbar />
+    // 2. Wrap everything in the AuthProvider so useAuth() is accessible everywhere
+    <AuthProvider>
+      {/* <Navbar /> */}
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
 
         {/* ADMIN ROUTES (Protected) */}
         <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
-          {/* DashboardLayout acts as the parent wrapper containing the Sidebar */}
           <Route path="/admin" element={<DashboardLayout />}>
             <Route index element={<AdminHome />} /> 
             <Route path="students" element={<StudentList />} />
@@ -40,22 +56,21 @@ function App() {
         <Route element={<ProtectedRoute allowedRoles={['TEACHER']} />}>
           <Route path="/teacher" element={<DashboardLayout />}>
             <Route index element={<TeacherHome />} />
-            {/* Add teacher-specific sub-routes here like: path="grades" */}
           </Route>
         </Route>
 
         {/* STUDENT ROUTES (Protected) */}
         <Route element={<ProtectedRoute allowedRoles={['STUDENT']} />}>
-          console.log('Rendering Student Routes'); // Debugging line
+          {/* Note: The raw console.log was removed from here to prevent routing syntax crashes */}
           <Route path="/student" element={<DashboardLayout />}>
             <Route index element={<StudentHome />} />
-            {/* Add student-specific sub-routes here like: path="schedule" */}
           </Route>
         </Route>
       </Routes>
-      <Footer />
-    </>
+      {/* <Footer /> */}
+    </AuthProvider>
   );
 }
 
 export default App;
+

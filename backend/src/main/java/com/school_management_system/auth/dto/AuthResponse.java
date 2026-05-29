@@ -1,10 +1,12 @@
 package com.school_management_system.auth.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
 public class AuthResponse {
 
-    private String token;  
-    private String role;
+    public String token;  
+    public  String role;
 }

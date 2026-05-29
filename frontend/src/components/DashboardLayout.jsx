@@ -4,14 +4,16 @@ import {
   LayoutDashboard, Users, BookOpen, 
   ClipboardList, LogOut, Settings 
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+    logout(); 
+    navigate('/');
   };
 
   // Define sidebar links

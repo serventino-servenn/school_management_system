@@ -3,7 +3,7 @@ package com.school_management_system.service;
 
 import com.school_management_system.common.exception.EmailAlreadyExistsException;
 import com.school_management_system.dto.UserRequest;
-import com.school_management_system.dto.UserResponse;
+import com.school_management_system.dto.RegistrationResponse;
 import com.school_management_system.entity.Role;
 import com.school_management_system.entity.User;
 import com.school_management_system.repository.UserRepository;
@@ -67,7 +67,7 @@ class UserServiceTest {
         when(userRepository.save(any(User.class)))
                 .thenReturn(savedUser);
 
-        UserResponse response =
+        RegistrationResponse response =
                 userService.createUser(userRequest);
 
         assertNotNull(response);

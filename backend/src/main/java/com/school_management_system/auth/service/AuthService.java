@@ -23,7 +23,7 @@ public class AuthService {
 
         User user = userRepository.findByEmail(request.email)
                 .orElseThrow(() ->
-                        new RuntimeException("Invalid credentials")
+                        new RuntimeException("Invalid email or password")
                 );
 
         boolean passwordMatches =
@@ -33,7 +33,7 @@ public class AuthService {
                 );
 
         if (!passwordMatches) {
-            throw new RuntimeException("Invalid credentials");
+            throw new RuntimeException("Invalid email or password");
         }
 
         String token = jwtService.generateToken(user.getEmail());

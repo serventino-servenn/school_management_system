@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GraduationCap, User, Mail, Lock, Building2, ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
-import { register } from '../services/api'; // Your Axios service for registration
+import { useAuth } from '../context/AuthContext';
+import {register} from '../services/api'
 
 const Register = () => {
+  const { loginSession } = useAuth(); 
   const navigate = useNavigate();
   
   // 1. Component States
@@ -15,7 +17,7 @@ const Register = () => {
     role: 'STUDENT',
     department: ''
   });
-  const [error, setError] = useState(""); // For backend error messages
+  const [error, setError] = useState(""); 
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -29,18 +31,25 @@ const Register = () => {
     setError("");
 
     try {
-      // 2. Call your Axios Service
+      
       const response = await register(formData);
-      if (response.status === 200) {
-        const role = response.data.role; 
-        if (role === 'ADMIN'){
+      const { token, role } = response.data;
+
+      loginSession(token, role); 
+      switch (role) {
+        case 'ADMIN':
           navigate('/admin');
-        } else if (role === 'TEACHER') {
+          break;
+        case 'TEACHER':
           navigate('/teacher');
-        } else {
+          break;
+        case 'STUDENT':
           navigate('/student');
-        }
+          break;
+        default:
+          navigate('/');
       }
+
         
     } catch (err) {
       // 4. Capture the message from your GlobalExceptionHandler

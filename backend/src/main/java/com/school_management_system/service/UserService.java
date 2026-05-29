@@ -4,9 +4,10 @@ package com.school_management_system.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.school_management_system.auth.service.JwtService;
 import com.school_management_system.common.exception.EmailAlreadyExistsException;
 import com.school_management_system.dto.UserRequest;
-import com.school_management_system.dto.UserResponse;
+import com.school_management_system.dto.RegistrationResponse;
 import com.school_management_system.entity.User;
 import com.school_management_system.repository.UserRepository;
 
@@ -18,9 +19,10 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtProvider; 
 
     @Transactional 
-    public UserResponse createUser(UserRequest request) {
+    public RegistrationResponse createUser(UserRequest request) {
         if (userRepository.findByEmail(request.email).isPresent()) {
             throw new EmailAlreadyExistsException("Email already exists");
         }
@@ -34,17 +36,19 @@ public class UserService {
 
         User saved = userRepository.save(user);
         
-        // Return your response DTO
-        return mapToResponse(saved);
+        String token = jwtProvider.generateToken(saved.getEmail());
+        
+        return mapToRegistrationResponse(saved, token);
     }
 
-    private UserResponse mapToResponse(User user) {
-        UserResponse response = new UserResponse();
-        response.id = user.getId();
-        response.firstName = user.getFirstName();
-        response.lastName = user.getLastName();
-        response.email = user.getEmail();
-        response.role = user.getRole();
-        return response;
+    private RegistrationResponse mapToRegistrationResponse(User user, String token) {
+        return new RegistrationResponse(
+            user.getId(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getEmail(),
+            token,
+            user.getRole()
+        );
     }
 }

@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogIn, Mail, Lock, AlertCircle ,GraduationCap,} from 'lucide-react';
 import {login} from '../services/api'
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { loginSession } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,19 +17,22 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // Sends data to your Spring Boot /api/auth/login endpoint
+     
       const response = await login(formData);
-      // Store the JWT token from your Java backend
-      localStorage.setItem('token', response.data.token); 
-      console.log('Login successful, token stored:', response.data.token);
-      // Navigate based on the role your backend returns
-      const role = response.data.role; 
-      if (role === 'ADMIN'){
-        navigate('/admin');
-      } else if (role === 'TEACHER') {
-        navigate('/teacher');
-      } else {
-        navigate('/student');
+      console.log('Login response:', response.data); // Debugging line
+      const { token, role } = response.data;
+     
+      loginSession(token, role); 
+      
+      switch (role) {
+        case 'ADMIN':
+          navigate('/admin');
+          break;
+        case 'TEACHER':
+          navigate('/teacher');
+          break;
+        default:
+          navigate('/student');
       }
     } catch (err) {
       setError(response.data.message || 'Invalid email or password. Please try again.');
