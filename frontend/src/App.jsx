@@ -7,16 +7,33 @@ import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Layouts and Pages
-import DashboardLayout from './components/DashboardLayout';
+import DashboardLayout from './components/AdminLayout';
 import AdminHome from './pages/AdminHome';
-import StudentList from './pages/StudentList';
-import CourseList from './pages/CourseList';
+import AdminStudents from './pages/AdminStudents';
+import AdminCourses from './pages/AdminCourses';
+import AdminEnrollments from './pages/AdminEnrollment';
+import AdminAnalytics from './pages/AdminAnalytics';
 
-// Import your other role dashboards when ready
-import TeacherHome from './pages/TeacherHome'; 
+//teacher and layouts
+import TeacherLayout from './components/TeacherLayout';
+import TeacherAttendance from './pages/TeacherAttendance';
+import TeacherGradeBook from './pages/TeacherGradeBook';
+import TeacherLessons from './pages/TeacherLessons';
+import TeacherResources from './pages/TeacherResources';
+
+// srtudent and layouts
+import StudentLayout from './components/StudentLayout';
 import StudentHome from './pages/StudentHome';
+import StudentAcademicRecord from './pages/StudentAcademicRecord';
+import CourseEnrollment from './pages/CourseEnrollment';
+import AiStudyBuddy from './pages/AiStudyBuddy';
+import SmartAlerts from './pages/SmartAlerts';
+import FinancialPortal from './pages/FinancialPortal';
 
 import { AuthProvider } from './context/AuthContext';
+
+
+
 
 const  PublicLayout =  () => {
   return (
@@ -47,23 +64,33 @@ function App() {
         <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
           <Route path="/admin" element={<DashboardLayout />}>
             <Route index element={<AdminHome />} /> 
-            <Route path="students" element={<StudentList />} />
-            <Route path="courses" element={<CourseList />} />
+            <Route path="users" element={<AdminStudents />} />
+            <Route path="courses" element={<AdminCourses />} />
+            <Route path="enrollments" element={<AdminEnrollments />} />
+            <Route path="analytics" element={<AdminAnalytics />} />
           </Route>
         </Route>
 
         {/* TEACHER ROUTES (Protected) */}
         <Route element={<ProtectedRoute allowedRoles={['TEACHER']} />}>
-          <Route path="/teacher" element={<DashboardLayout />}>
-            <Route index element={<TeacherHome />} />
+          <Route path="/teacher" element={<TeacherLayout />}>
+            <Route path="attendance" element={<TeacherAttendance />} />
+            <Route path='gradebook' element={<TeacherGradeBook />} />
+            <Route path="lessons" element={<TeacherLessons />} />
+            <Route path="resources" element={<TeacherResources />} />
           </Route>
         </Route>
 
         {/* STUDENT ROUTES (Protected) */}
         <Route element={<ProtectedRoute allowedRoles={['STUDENT']} />}>
           {/* Note: The raw console.log was removed from here to prevent routing syntax crashes */}
-          <Route path="/student" element={<DashboardLayout />}>
+          <Route path="/student" element={<StudentLayout />}>
             <Route index element={<StudentHome />} />
+            <Route path="profile" element={<StudentAcademicRecord />} />
+            <Route path="enrollment" element={<CourseEnrollment />} />
+            <Route path="ai-buddy" element={<AiStudyBuddy />} />
+            <Route path="alerts" element={<SmartAlerts />} />
+            <Route path="financial" element={<FinancialPortal />} />
           </Route>
         </Route>
       </Routes>
