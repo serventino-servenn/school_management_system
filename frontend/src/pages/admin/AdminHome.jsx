@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Users, BookOpen, CreditCard, Sparkles, TrendingUp, AlertTriangle, ArrowRight } from 'lucide-react';
-import QuickActionCard from '../components/QuickActionCard';
+import QuickActionCard from '../../components/QuickActionCard';
 import { useNavigate } from 'react-router-dom';
 const AdminHome = () => {
     const [isAiLoading, setIsAiLoading] = useState(false);
@@ -55,15 +55,19 @@ const AdminHome = () => {
         <div className="space-y-8">
             {/* Top Welcome Banner */}
             <div className="bg-gradient-to-r from-indigo-900 to-slate-900 p-8 rounded-2xl text-white shadow-sm relative overflow-hidden">
-                <div className="relative z-10 max-w-xl">
-                    <h2 className="text-3xl font-bold mb-2">Welcome back, Admin!</h2>
-                    <p className="text-indigo-200 text-sm leading-relaxed">
-                        EduFlow is running smoothly. Review your school's live metrics, manage system operations, or generate an automated AI diagnostics report below.
-                    </p>
-                </div>
-                <div className="absolute right-0 bottom-0 opacity-10 transform translate-x-10 translate-y-10 pointer-events-none">
-                    <BookOpen size={300} />
-                </div>
+                    <div className="relative z-10 max-w-2xl">
+                        <h2 className="text-3xl font-bold mb-2">
+                            School Administration Dashboard
+                        </h2>
+
+                        <p className="text-indigo-200 text-sm leading-relaxed">
+                            Monitor users, courses, instructors, and platform performance from a centralized workspace.
+                        </p>
+                    </div>
+
+                    <div className="absolute right-0 bottom-0 opacity-10 transform translate-x-10 translate-y-10 pointer-events-none">
+                        <BookOpen size={300} />
+                    </div>
             </div>
 
             {/* Metrics Grid */}
@@ -179,16 +183,16 @@ const AdminHome = () => {
                         description="Create and manage courses."
                         color="text-emerald-600"
                         actionText="Go to Courses"
-                        onClick={() => navigate('/admin/courses')}
+                        onClick={() => navigate('/admin/course-management')}
                         />
 
                         <QuickActionCard
-                        category="Enrollments"
-                        title="Manage Enrollments"
-                        description="Assign students to courses."
+                        category="Insights"
+                        title="Analytics"
+                        description="Monitor platform activity and academic performance."
                         color="text-amber-600"
-                        actionText="Go to Enrollments"
-                        onClick={() => navigate('/admin/enrollments')}
+                        actionText="View Analytics"
+                        onClick={() => navigate('/admin/analytics')}
                         />
                     </div>
             </div>

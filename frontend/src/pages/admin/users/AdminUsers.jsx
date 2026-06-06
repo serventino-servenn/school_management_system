@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Search, Filter, Edit2, Trash2, ShieldCheck, Mail, Calendar, UserCheck } from 'lucide-react';
 
-const AdminStudents = () => {
+const AdminUsers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -238,4 +238,4 @@ const AdminStudents = () => {
 
 }     
 
-export default AdminStudents;
+export default AdminUsers;

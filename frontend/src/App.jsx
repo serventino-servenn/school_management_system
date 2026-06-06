@@ -8,11 +8,13 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Layouts and Pages
 import DashboardLayout from './components/AdminLayout';
-import AdminHome from './pages/AdminHome';
-import AdminStudents from './pages/AdminStudents';
-import AdminCourses from './pages/AdminCourses';
-import AdminEnrollments from './pages/AdminEnrollment';
-import AdminAnalytics from './pages/AdminAnalytics';
+import AdminHome from './pages/admin/AdminHome';
+import AdminUsers from './pages/admin/users/AdminUsers';
+import AdminCourses from './pages/admin/courses/AdminCourses';
+import CreateCourse from './pages/admin/courses/CreateCourse';
+import CourseDetails from './pages/admin/courses/CourseDetails';
+// import AdminEnrollments from './pages/AdminEnrollment';
+import AdminAnalytics from './pages/admin/analytics/AdminAnalytics';
 
 //teacher and layouts
 import TeacherLayout from './components/TeacherLayout';
@@ -63,10 +65,19 @@ function App() {
         {/* ADMIN ROUTES (Protected) */}
         <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
           <Route path="/admin" element={<DashboardLayout />}>
+            {/* dashboard */}
             <Route index element={<AdminHome />} /> 
-            <Route path="users" element={<AdminStudents />} />
-            <Route path="courses" element={<AdminCourses />} />
-            <Route path="enrollments" element={<AdminEnrollments />} />
+            {/* user management */}
+            <Route path="users" element={<AdminUsers />} />
+            {/* course management */}
+            {/* Course Management */}
+            <Route path="course-management">
+              <Route index element={<AdminCourses />} />
+              <Route path="new" element={<CreateCourse />} />
+              <Route path=":courseId" element={<CourseDetails />} />
+            </Route>
+            {/* <Route path="courses" element={<AdminCourses />} /> */}
+            {/* <Route path="enrollments" element={<AdminEnrollments />} /> */}
             <Route path="analytics" element={<AdminAnalytics />} />
           </Route>
         </Route>
