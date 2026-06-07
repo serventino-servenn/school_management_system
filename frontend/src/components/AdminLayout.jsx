@@ -15,8 +15,8 @@ const DashboardLayout = () => {
 
   const menuItems = [
     { icon: <LayoutDashboard size={20} />,label: "Dashboard", path: "/admin"},
-    {icon: <Users size={20} />,label: "Users",path: "/admin/users"},
-    { icon: <BookOpen size={20} />,label: "course-management",path: "/admin/course-management"},
+    {icon: <Users size={20} />,label: "User Management",path: "/admin/users"},
+    { icon: <BookOpen size={20} />,label: "Courses Management",path: "/admin/course-management"},
     // { icon: <ClipboardList size={20} />,label: "Enrollments",path: "/admin/enrollments"},
     {icon: <TrendingUp size={20} />,label: "Analytics",path: "/admin/analytics"}
   ];
