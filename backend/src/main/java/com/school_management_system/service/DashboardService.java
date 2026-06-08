@@ -1,44 +1,56 @@
 package com.school_management_system.service;
 
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import com.school_management_system.dto.DashboardStatsResponse;
-import com.school_management_system.dto.StatMetric;
-import com.school_management_system.repository.DashboardRepository;
+import com.school_management_system.dto.DashboardStats;
+import com.school_management_system.dto.DashboardStats.StatMetric;
+import com.school_management_system.entity.Role;
+import com.school_management_system.repository.CourseRepository;
+import com.school_management_system.repository.EnrollmentRepository;
+import com.school_management_system.repository.UserRepository;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor // Lombok automatically creates the constructor for dependency injection
 public class DashboardService {
 
-    private final DashboardRepository dashboardRepository;
+    // These final fields will be automatically injected by Spring via Lombok's constructor
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
-    public DashboardService(DashboardRepository dashboardRepository) {
-        this.dashboardRepository = dashboardRepository;
-    }
+    public DashboardStats getDashboardStats() {
+        log.info("Fetching dashboard metrics data");
 
-    public DashboardStatsResponse getDashboardStats() {
-        List<Object[]> results = dashboardRepository.fetchGlobalCounts();
-        
-        long students = 0;
-        long teachers = 0;
-        long courses = 0;
-        long enrollments = 0;
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
 
-        if (results != null && !results.isEmpty()) {
-            Object[] row = results.get(0);
-            students = ((Number) row[0]).longValue();
-            teachers = ((Number) row[1]).longValue();
-            courses = ((Number) row[2]).longValue();
-            enrollments = ((Number) row[3]).longValue();
-        }
+        // 1. Fetch Student Metrics (Filtered by Role Enum)
+        long totalStudents = userRepository.countByRole(Role.STUDENT.name());
+        long newStudents = userRepository.countByRoleAndCreatedAtAfter(Role.STUDENT.name(), oneWeekAgo);
+        StatMetric studentsDetail = new StatMetric(totalStudents, "+" + newStudents + " this week");
 
-        return new DashboardStatsResponse(
-            new StatMetric(students, "+12 this week"),
-            new StatMetric(teachers, "+1 this month"),
-            new StatMetric(courses, "3 new courses"),
-            new StatMetric(enrollments, "+28 this month")
-        );
+        // 2. Fetch Teacher Metrics (Filtered by Role Enum)
+        long totalTeachers = userRepository.countByRole(Role.TEACHER.name());
+        long newTeachers = userRepository.countByRoleAndCreatedAtAfter(Role.TEACHER.name(), oneMonthAgo);
+        StatMetric teachersDetail = new StatMetric(totalTeachers, "+" + newTeachers + " this month");
+
+        // 3. Fetch Course Metrics
+        long totalCourses = courseRepository.count();
+        long newCourses = courseRepository.countByCreatedAtAfter(oneMonthAgo); 
+        StatMetric coursesDetail = new StatMetric(totalCourses, "+" + newCourses + " new courses");
+
+        // 4. Fetch Enrollment Metrics
+        long totalEnrollments = enrollmentRepository.count();
+        long newEnrollments = enrollmentRepository.countByCreatedAtAfter(oneMonthAgo); // Adjust method name if using enrollmentDateAfter
+        StatMetric enrollmentsDetail = new StatMetric(totalEnrollments, "+" + newEnrollments + " this month");
+
+        return new DashboardStats(studentsDetail, teachersDetail, coursesDetail, enrollmentsDetail);
     }
 }
+
