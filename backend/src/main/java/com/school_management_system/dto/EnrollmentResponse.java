@@ -12,5 +12,5 @@ public class EnrollmentResponse {
     public Long courseId;
     public String courseTitle;
 
-    public LocalDate enrolledAt;
+    public LocalDate createdAt;
 }

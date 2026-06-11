@@ -1,6 +1,6 @@
 package com.school_management_system.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +12,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
     List<Enrollment> findByStudentId(Long studentId);
 
-    long countByCreatedAtAfter(LocalDateTime dateTime);
+    long countByCreatedAtAfter(LocalDate date);
     
 }

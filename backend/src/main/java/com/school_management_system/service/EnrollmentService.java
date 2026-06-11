@@ -41,7 +41,7 @@ public class EnrollmentService {
         Enrollment e = new Enrollment();
         e.setStudent(student);
         e.setCourse(course);
-        e.setEnrolledAt(LocalDate.now());
+        e.setCreatedAt(LocalDate.now());
 
         return map(enrollmentRepository.save(e));
     }
@@ -61,7 +61,7 @@ public class EnrollmentService {
         r.studentName = e.getStudent().getFirstName() + " " + e.getStudent().getLastName();
         r.courseId = e.getCourse().getId();
         r.courseTitle = e.getCourse().getTitle();
-        r.enrolledAt = e.getEnrolledAt();
+        r.createdAt = e.getCreatedAt();
         return r;
     }
 }

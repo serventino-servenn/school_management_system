@@ -1,5 +1,9 @@
 package com.school_management_system.entity;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,4 +39,9 @@ public class Course {
 
     @ManyToOne
     private User teacher;
+
+    //createdAt
+     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

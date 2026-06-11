@@ -2,12 +2,13 @@ package com.school_management_system.controller;
 
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.school_management_system.dto.DashboardInsightsResponse;
 import com.school_management_system.dto.DashboardStats;
+import com.school_management_system.service.AiInsightsService;
 import com.school_management_system.service.DashboardService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class DashboardController {
 
     private final DashboardService dashboardService;
+    private final AiInsightsService aiInsightsService;
 
     @GetMapping("/stats")
     public ResponseEntity<DashboardStats> getDashboardStats() {
@@ -32,6 +34,14 @@ public class DashboardController {
         DashboardStats stats = dashboardService.getDashboardStats();
         
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/insights")
+    public ResponseEntity<DashboardInsightsResponse> getInsights() {
+
+        return ResponseEntity.ok(
+                aiInsightsService.getInsights()
+        );
     }
 }
 

@@ -1,8 +1,8 @@
 package com.school_management_system.service;
 
 import java.time.LocalDateTime;
-
 import org.springframework.stereotype.Service;
+
 
 import com.school_management_system.dto.DashboardStats;
 import com.school_management_system.dto.DashboardStats.StatMetric;
@@ -10,7 +10,6 @@ import com.school_management_system.entity.Role;
 import com.school_management_system.repository.CourseRepository;
 import com.school_management_system.repository.EnrollmentRepository;
 import com.school_management_system.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,34 +22,88 @@ public class DashboardService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final EnrollmentRepository enrollmentRepository;
-
+   
     public DashboardStats getDashboardStats() {
         log.info("Fetching dashboard metrics data");
 
+        // 1. Keep these as LocalDateTime for User and Course entities
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
         LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
 
-        // 1. Fetch Student Metrics (Filtered by Role Enum)
-        long totalStudents = userRepository.countByRole(Role.STUDENT.name());
-        long newStudents = userRepository.countByRoleAndCreatedAtAfter(Role.STUDENT.name(), oneWeekAgo);
+        // Fetch Student Metrics
+        long totalStudents = userRepository.countByRole(Role.STUDENT);
+        long newStudents = userRepository.countByRoleAndCreatedAtAfter(Role.STUDENT, oneWeekAgo);
         StatMetric studentsDetail = new StatMetric(totalStudents, "+" + newStudents + " this week");
 
-        // 2. Fetch Teacher Metrics (Filtered by Role Enum)
-        long totalTeachers = userRepository.countByRole(Role.TEACHER.name());
-        long newTeachers = userRepository.countByRoleAndCreatedAtAfter(Role.TEACHER.name(), oneMonthAgo);
+        // Fetch Teacher Metrics
+        long totalTeachers = userRepository.countByRole(Role.TEACHER);
+        long newTeachers = userRepository.countByRoleAndCreatedAtAfter(Role.TEACHER, oneMonthAgo);
         StatMetric teachersDetail = new StatMetric(totalTeachers, "+" + newTeachers + " this month");
 
-        // 3. Fetch Course Metrics
+        // Fetch Course Metrics
         long totalCourses = courseRepository.count();
         long newCourses = courseRepository.countByCreatedAtAfter(oneMonthAgo); 
         StatMetric coursesDetail = new StatMetric(totalCourses, "+" + newCourses + " new courses");
 
-        // 4. Fetch Enrollment Metrics
+        // 2. Extract just the LocalDate portion specifically for the Enrollment entity 👇
+        java.time.LocalDate enrollmentDateThreshold = oneMonthAgo.toLocalDate();
+
+        // Fetch Enrollment Metrics using the correct LocalDate parameter
         long totalEnrollments = enrollmentRepository.count();
-        long newEnrollments = enrollmentRepository.countByCreatedAtAfter(oneMonthAgo); // Adjust method name if using enrollmentDateAfter
+        long newEnrollments = enrollmentRepository.countByCreatedAtAfter(enrollmentDateThreshold); 
         StatMetric enrollmentsDetail = new StatMetric(totalEnrollments, "+" + newEnrollments + " this month");
 
         return new DashboardStats(studentsDetail, teachersDetail, coursesDetail, enrollmentsDetail);
     }
+
+    // public AiInsightReport generateRealAiInsights() {
+    //     log.info("Aggregating system data for live AI model analysis");
+
+    //     // 2. Gather actual live raw stats from your database
+    //     long students = userRepository.countByRole(Role.STUDENT);
+    //     long teachers = userRepository.countByRole(Role.TEACHER);
+    //     long courses = courseRepository.count();
+    //     long enrollments = enrollmentRepository.count();
+
+    //     // 3. Set up a Structured Output Converter for your exact DTO class
+    //     var outputConverter = new StructuredOutputConverter<>(AiInsightReport.class);
+    //     String jsonFormatInstructions = outputConverter.getPlugins();
+
+    //     // 4. Create an advanced system prompt passing raw data to the AI
+    //     String rawPrompt = """
+    //         You are the core AI Analytics engine for a SaaS School Management System.
+    //         Analyze the following live platform database metrics:
+    //         - Total Registered Students: {students}
+    //         - Total Active Instructors: {teachers}
+    //         - Total Course Catalog Items: {courses}
+    //         - Total Seat Enrollments: {enrollments}
+            
+    //         Based on these metrics, generate an Executive Summary and exactly 2 platform alerts.
+    //         If the student-to-teacher ratio is high, flag it. Otherwise, simulate realistic variations 
+    //         of attendance anomalies or grading performance drop risks relevant to this school scale.
+            
+    //         {format_instructions}
+    //         """;
+
+    //     // 5. Inject the live metrics into the prompt template
+    //     PromptTemplate template = new PromptTemplate(rawPrompt);
+    //     Prompt prompt = template.create(Map.of(
+    //         "students", students,
+    //         "teachers", teachers,
+    //         "courses", courses,
+    //         "enrollments", enrollments,
+    //         "format_instructions", jsonFormatInstructions
+    //     ));
+
+    //     log.info("Dispatching context-rich prompt matrix to the LLM cloud endpoint");
+        
+    //     // 6. Call the LLM, capture the raw response string, and cast it directly into your Java object
+    //     String aiRawResponse = chatModel.call(prompt).getResult().getOutput().getContent();
+        
+    //     return outputConverter.convert(aiRawResponse);
+    // }
+
+    
+
 }
 

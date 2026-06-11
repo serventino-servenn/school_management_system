@@ -25,5 +25,5 @@ public class Enrollment {
     @ManyToOne
     private Course course;
 
-    private LocalDate enrolledAt;
+    private LocalDate createdAt;
 }
