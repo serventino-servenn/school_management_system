@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.school_management_system.common.exception.ResourceNotFoundException;
 import com.school_management_system.common.exception.UnauthorizedActionException;
 import com.school_management_system.dto.CourseRequest;
+import com.school_management_system.dto.CourseResponse;
+import com.school_management_system.dto.CreateCourseRequest;
 import com.school_management_system.dto.StudentSummaryResponse;
 import com.school_management_system.dto.CourseDetailsResponse;
 import com.school_management_system.entity.Course;
@@ -26,26 +28,33 @@ public class CourseService {
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
 
-    public CourseDetailsResponse createCourse(CourseRequest request) {
+    public CourseResponse createCourse(CreateCourseRequest request) {
 
         if (courseRepository.existsByCourseCode(request.courseCode)) {
-            throw new IllegalStateException("Course code exists");
-        }
-
-        User teacher = userRepository.findById(request.teacherId)
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found"));
-
-        if (teacher.getRole() != Role.TEACHER) {
-            throw new UnauthorizedActionException("User is not a teacher");
+            throw new IllegalStateException(
+                    "Course code already exists"
+            );
         }
 
         Course course = new Course();
+
         course.setCourseCode(request.courseCode);
         course.setTitle(request.title);
         course.setDescription(request.description);
-        course.setTeacher(teacher);
 
-        return mapToResponse(courseRepository.save(course));
+        if (request.teacherId != null) {
+
+            User teacher = userRepository.findById(request.teacherId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Teacher not found"
+                            ));
+
+            course.setTeacher(teacher);
+      }
+
+       
+      return mapToResponse(courseRepository.save(course));
     }
     //get all courses
     public List<CourseDetailsResponse> getAll() {
@@ -61,7 +70,7 @@ public class CourseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
         return mapToResponse(course);
     }
-
+    
     private CourseDetailsResponse mapToResponse(Course course) {
 
         CourseDetailsResponse response = new CourseDetailsResponse();

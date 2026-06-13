@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.school_management_system.dto.CourseRequest;
+import com.school_management_system.dto.CourseResponse;
+import com.school_management_system.dto.CreateCourseRequest;
 import com.school_management_system.dto.CourseDetailsResponse;
 import com.school_management_system.service.CourseService;
 
@@ -27,7 +29,7 @@ public class CourseController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
-    public CourseDetailsResponse create(@RequestBody @Valid CourseRequest request) {
+    public CourseResponse create(@RequestBody @Valid CreateCourseRequest request) {
         return courseService.createCourse(request);
     }
 

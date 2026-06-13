@@ -59,7 +59,6 @@ public class EnrollmentService {
         r.studentName = e.getStudent().getFirstName() + " " + e.getStudent().getLastName();
         r.courseId = e.getCourse().getId();
         r.courseTitle = e.getCourse().getTitle();
-        r.createdAt = e.getCreatedAt();
         return r;
     }
 }
