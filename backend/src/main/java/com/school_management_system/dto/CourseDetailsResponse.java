@@ -1,6 +1,8 @@
 package com.school_management_system.dto;
 
-public class CourseResponse {
+import java.util.List;
+
+public class CourseDetailsResponse {
 
     public Long id;
 
@@ -13,4 +15,6 @@ public class CourseResponse {
     public Long teacherId;
 
     public String teacherName;
+
+    public List<StudentSummaryResponse> students;
 }

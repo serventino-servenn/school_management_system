@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.school_management_system.auth.security.CustomUserDetails;
 import com.school_management_system.dto.AttendanceResponse;
-import com.school_management_system.dto.CourseResponse;
+import com.school_management_system.dto.CourseDetailsResponse;
 import com.school_management_system.dto.EnrollmentResponse;
 import com.school_management_system.dto.GradeResponse;
 import com.school_management_system.entity.Course;

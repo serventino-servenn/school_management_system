@@ -22,7 +22,12 @@ api.interceptors.request.use(
 
 export const register = (userData) => api.post('/auth/register', userData);
 export const login = (credentials) => api.post('/auth/login', credentials);
+
+//dashboard 
 export const getMetrics = () => api.get('/admin/dashboard/stats');
 export const getInsights = () => api.get('/admin/dashboard/insights');
+//courses
+export const getCourses = () => api.get('/courses');
+export const getCourseById = (id) => api.get(`/courses/${id}`);
 
 export default api;

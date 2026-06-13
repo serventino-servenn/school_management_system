@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCourses } from '../../../services/api';
 import {
     Plus,
     Search,
@@ -12,36 +13,53 @@ const AdminCourses = () => {
     const navigate = useNavigate();
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Mock data (replace with API later)
-    const [courses] = useState([
-        {
-            id: 'CRS-101',
-            title: 'Enterprise Java & Spring Boot',
-            dept: 'Backend Engineering',
-            modules: 12,
-            level: 'Advanced'
-        },
-        {
-            id: 'CRS-102',
-            title: 'Full-Stack React & Tailwind',
-            dept: 'Frontend Engineering',
-            modules: 8,
-            level: 'Intermediate'
-        },
-        {
-            id: 'CRS-103',
-            title: 'Cloud Architecture & DevOps',
-            dept: 'Systems Infrastructure',
-            modules: 10,
-            level: 'Advanced'
-        }
-    ]);
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const {data} = await getCourses();
+                setCourses(data);
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
+
+    // // Mock data (replace with API later)
+    // const [courses] = useState([
+    //     {
+    //         id: 'CRS-101',
+    //         title: 'Enterprise Java & Spring Boot',
+    //         dept: 'Backend Engineering',
+    //         modules: 12,
+    //         level: 'Advanced'
+    //     },
+    //     {
+    //         id: 'CRS-102',
+    //         title: 'Full-Stack React & Tailwind',
+    //         dept: 'Frontend Engineering',
+    //         modules: 8,
+    //         level: 'Intermediate'
+    //     },
+    //     {
+    //         id: 'CRS-103',
+    //         title: 'Cloud Architecture & DevOps',
+    //         dept: 'Systems Infrastructure',
+    //         modules: 10,
+    //         level: 'Advanced'
+    //     }
+    // ]);
 
     const filteredCourses = courses.filter(course =>
-        course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.dept.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.id.toLowerCase().includes(searchTerm.toLowerCase())
+        course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.id?.toString().includes(searchTerm)
     );
 
     return (
@@ -95,75 +113,82 @@ const AdminCourses = () => {
                     Course Catalog
                 </h3>
             </div>
-
             {/* Course Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                {filteredCourses.map((course) => (
-                    <div
-                        key={course.id}
-                        onClick={() =>
-                            navigate(`/admin/course-management/${course.id}`)
-                        }
-                        className="group cursor-pointer bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm hover:border-indigo-200 hover:shadow-md transition"
-                    >
-                        <div className="flex items-start justify-between gap-4">
+                {loading ? (
+                    <div className="col-span-full bg-white rounded-2xl border border-slate-200 p-10 text-center">
+                        <p className="text-slate-500">Loading courses...</p>
+                    </div>
+                ) : filteredCourses.length > 0 ? (
 
-                            <div className="space-y-2">
+                    filteredCourses.map((course) => (
+                        <div
+                            key={course.id}
+                            onClick={() =>
+                                navigate(`/admin/course-management/${course.id}`)
+                            }
+                            className="group cursor-pointer bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm hover:border-indigo-200 hover:shadow-md transition"
+                        >
+                            <div className="flex items-start justify-between gap-4">
 
-                                <span className="inline-flex text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md uppercase">
-                                    {course.dept}
+                                <div className="space-y-2">
+
+                                    <span className="inline-flex text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md uppercase">
+                                        {course.department}
+                                    </span>
+
+                                    <h4 className="text-lg font-bold text-slate-800 group-hover:text-indigo-600 transition">
+                                        {course.title}
+                                    </h4>
+
+                                    <p className="text-xs text-slate-400 font-mono">
+                                        {course.courseCode}
+                                    </p>
+
+                                </div>
+
+                                <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-lg">
+                                    <Award size={14} />
+                                    {course.level}
                                 </span>
-
-                                <h4 className="text-lg font-bold text-slate-800 group-hover:text-indigo-600 transition">
-                                    {course.title}
-                                </h4>
-
-                                <p className="text-xs text-slate-400 font-mono">
-                                    {course.id}
-                                </p>
 
                             </div>
 
-                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-lg">
-                                <Award size={14} />
-                                {course.level}
-                            </span>
+                            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
 
+                                <span className="text-sm text-slate-500">
+                                    {course.moduleCount} Modules
+                                </span>
+
+                                <span className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 group-hover:text-indigo-700">
+                                    View Details
+                                    <ArrowRight
+                                        size={16}
+                                        className="group-hover:translate-x-1 transition-transform"
+                                    />
+                                </span>
+
+                            </div>
                         </div>
+                    ))
 
-                        <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                ) : (
 
-                            <span className="text-sm text-slate-500">
-                                {course.modules} Modules
-                            </span>
-
-                            <span className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 group-hover:text-indigo-700">
-                                View Details
-                                <ArrowRight
-                                    size={16}
-                                    className="group-hover:translate-x-1 transition-transform"
-                                />
-                            </span>
-
-                        </div>
-                    </div>
-                ))}
-
-                {filteredCourses.length === 0 && (
                     <div className="col-span-full bg-white rounded-2xl border border-slate-200 p-10 text-center">
                         <h3 className="font-semibold text-slate-700">
                             No Courses Found
                         </h3>
 
                         <p className="text-sm text-slate-500 mt-2">
-                            Try adjusting your search criteria.
+                            Try adjusting your search criteria or create a new course.
                         </p>
                     </div>
+
                 )}
 
             </div>
-
+                
         </div>
     );
 };

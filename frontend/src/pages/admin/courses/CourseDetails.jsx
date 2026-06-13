@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { getCourseById } from '../../../services/api';
 import {
     ArrowLeft,
     BookOpen,
@@ -15,43 +16,59 @@ import {
 const CourseDetails = () => {
     const navigate = useNavigate();
     const { courseId } = useParams();
+    const [course, setCourse] = useState(null);
 
-    // Mock Course Data
-    const [course] = useState({
-        id: courseId,
-        title: 'Enterprise Java & Spring Boot',
-        department: 'Backend Engineering',
-        level: 'Advanced',
-        modules: 12,
-        description:
-            'Comprehensive training in Java enterprise development, Spring Boot, REST APIs, security, testing, and deployment.'
-    });
+    useEffect(() => {
+        const fetchCourse = async () => {
+            try {
+                const response = await getCourseById(courseId);
+                setCourse(response);
+            } catch (error) {
+                console.error('Error fetching course:', error);
+            }
+        };
 
-    // Mock Instructor
-    const [instructor] = useState({
-        id: 1,
-        name: 'Dr. Angela Yu',
-        email: 'angela@example.com'
-    });
+        fetchCourse();
+    }, [courseId]);
 
-    // Mock Students
-    const [students] = useState([
-        {
-            id: 1,
-            name: 'John Doe',
-            email: 'john@example.com'
-        },
-        {
-            id: 2,
-            name: 'Jane Smith',
-            email: 'jane@example.com'
-        },
-        {
-            id: 3,
-            name: 'Michael Brown',
-            email: 'michael@example.com'
-        }
-    ]);
+    // // Mock Course Data
+    // const [course] = useState({
+    //     id: courseId,
+    //     title: 'Enterprise Java & Spring Boot',
+    //     department: 'Backend Engineering',
+    //     level: 'Advanced',
+    //     modules: 12,
+    //     description:
+    //         'Comprehensive training in Java enterprise development, Spring Boot, REST APIs, security, testing, and deployment.'
+    // });
+
+
+
+    // // Mock Instructor
+    // const [instructor] = useState({
+    //     id: 1,
+    //     name: 'Dr. Angela Yu',
+    //     email: 'angela@example.com'
+    // });
+
+    // // Mock Students
+    // const [students] = useState([
+    //     {
+    //         id: 1,
+    //         name: 'John Doe',
+    //         email: 'john@example.com'
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'Jane Smith',
+    //         email: 'jane@example.com'
+    //     },
+    //     {
+    //         id: 3,
+    //         name: 'Michael Brown',
+    //         email: 'michael@example.com'
+    //     }
+    // ]);
 
     return (
         <div className="space-y-8">
@@ -153,20 +170,38 @@ const CourseDetails = () => {
                                 Instructor
                             </h2>
 
-                            <button className="text-indigo-600 text-sm font-medium hover:text-indigo-700">
+                            <button
+                                className="text-indigo-600 text-sm font-medium hover:text-indigo-700"
+                            >
                                 Change
                             </button>
                         </div>
 
-                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                            <h3 className="font-semibold text-slate-800">
-                                {instructor.name}
-                            </h3>
+                        {course.teacherId ? (
+                            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
 
-                            <p className="text-sm text-slate-500 mt-1">
-                                {instructor.email}
-                            </p>
-                        </div>
+                                <h3 className="font-semibold text-slate-800">
+                                    {course.teacherName}
+                                </h3>
+
+                                <p className="text-sm text-slate-500 mt-1">
+                                    Assigned Instructor
+                                </p>
+
+                            </div>
+                        ) : (
+                            <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+
+                                <h3 className="font-semibold text-amber-800">
+                                    No Instructor Assigned
+                                </h3>
+
+                                <p className="text-sm text-amber-600 mt-1">
+                                    Assign an instructor to this course.
+                                </p>
+
+                            </div>
+                        )}
 
                     </div>
                 </div>
@@ -189,36 +224,48 @@ const CourseDetails = () => {
                             </button>
                         </div>
 
-                        <div className="space-y-3">
+                        {course.students?.length > 0 ? (
+                             <div className="space-y-3">
 
-                            {students.map((student) => (
-                                <div
-                                    key={student.id}
-                                    className="flex items-center justify-between border border-slate-100 rounded-xl p-4 hover:bg-slate-50 transition"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="bg-slate-100 p-2 rounded-lg">
-                                            <Users size={16} />
+                                {course.students.map((student) => (
+                                    <div
+                                        key={student.id}
+                                        className="flex items-center justify-between border border-slate-100 rounded-xl p-4 hover:bg-slate-50 transition"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-slate-100 p-2 rounded-lg">
+                                                <Users size={16} />
+                                            </div>
+
+                                            <div>
+                                                <p className="font-medium text-slate-800">
+                                                    {student.name}
+                                                </p>
+
+                                                <p className="text-sm text-slate-500">
+                                                    {student.email}
+                                                </p>
+                                            </div>
                                         </div>
 
-                                        <div>
-                                            <p className="font-medium text-slate-800">
-                                                {student.name}
-                                            </p>
-
-                                            <p className="text-sm text-slate-500">
-                                                {student.email}
-                                            </p>
-                                        </div>
+                                        <button className="text-sm text-red-500 hover:text-red-600 font-medium">
+                                            Remove
+                                        </button>
                                     </div>
+                                ))}
 
-                                    <button className="text-sm text-red-500 hover:text-red-600 font-medium">
-                                        Remove
-                                    </button>
-                                </div>
-                            ))}
+                            </div>
+                        ) : (
+                            <div className="bg-slate-50 border border-slate-100 rounded-xl p-6 text-center">
+                                <p className="font-medium text-slate-700">
+                                    No Students Enrolled
+                                </p>
 
-                        </div>
+                                <p className="text-sm text-slate-500 mt-1">
+                                    Add students to begin tracking attendance and grades.
+                                </p>
+                            </div>
+                        )}
 
                     </div>
                 </div>

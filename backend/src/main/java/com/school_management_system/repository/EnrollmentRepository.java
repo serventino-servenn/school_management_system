@@ -10,8 +10,16 @@ import com.school_management_system.entity.Enrollment;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
+   
+    long countByCourseId(Long courseId);
+
+    long countByCreatedAtAfter(LocalDate date); 
+
     List<Enrollment> findByStudentId(Long studentId);
 
-    long countByCreatedAtAfter(LocalDate date);
+    List<Enrollment> findByCourseId(Long courseId);
+
+
+   
     
 }

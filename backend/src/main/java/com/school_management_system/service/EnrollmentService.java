@@ -41,8 +41,6 @@ public class EnrollmentService {
         Enrollment e = new Enrollment();
         e.setStudent(student);
         e.setCourse(course);
-        e.setCreatedAt(LocalDate.now());
-
         return map(enrollmentRepository.save(e));
     }
     public List<EnrollmentResponse> getStudentEnrollments( Long studentId ) {
