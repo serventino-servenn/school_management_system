@@ -30,12 +30,13 @@ public class CourseController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public CourseResponse create(@RequestBody @Valid CreateCourseRequest request) {
+        System.err.println("Creating course: " + request.title);
         return courseService.createCourse(request);
     }
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public List<CourseDetailsResponse> getAll() {
+    public List<CourseResponse> getAll() {
         return courseService.getAll();
     }
 

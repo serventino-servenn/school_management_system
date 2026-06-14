@@ -57,7 +57,7 @@ public class CourseService {
       return mapToResponse(courseRepository.save(course));
     }
     //get all courses
-    public List<CourseDetailsResponse> getAll() {
+    public List<CourseResponse> getAll() {
         return courseRepository.findAll()
         .stream()
         .map(this::mapToResponse)
@@ -68,10 +68,10 @@ public class CourseService {
     public CourseDetailsResponse getCourseById(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-        return mapToResponse(course);
+        return mapToDetailsResponse(course);
     }
     
-    private CourseDetailsResponse mapToResponse(Course course) {
+    private CourseDetailsResponse mapToDetailsResponse(Course course) {
 
         CourseDetailsResponse response = new CourseDetailsResponse();
 
@@ -114,5 +114,23 @@ public class CourseService {
         response.students = students;
 
         return response;
+    }
+
+
+    private CourseResponse mapToResponse(Course c) {
+        CourseResponse r = new CourseResponse();
+
+        r.id = c.getId();
+        r.courseCode = c.getCourseCode();
+        r.title = c.getTitle();
+        r.description = c.getDescription();
+
+        if (c.getTeacher() != null) {
+                r.teacherId = c.getTeacher().getId();
+                r.teacherName = c.getTeacher().getFirstName() + " "
+                        + c.getTeacher().getLastName();
+        }
+
+        return r;
     }
 }
