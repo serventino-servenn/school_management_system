@@ -1,5 +1,6 @@
 package com.school_management_system.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,5 +44,5 @@ public class Course {
     //createdAt
      @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 }

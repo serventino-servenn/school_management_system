@@ -11,6 +11,7 @@ import {
 
 const AdminCourses = () => {
     const navigate = useNavigate();
+    
 
     const [searchTerm, setSearchTerm] = useState('');
     const [courses, setCourses] = useState([]);

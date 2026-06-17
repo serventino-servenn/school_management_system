@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createCourse } from '../../../services/api';
 import {
     ArrowLeft,
     Save,
@@ -13,11 +14,10 @@ const CreateCourse = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
+        courseCode: '',
         title: '',
-        department: '',
-        level: 'Beginner',
-        modules: '',
-        description: ''
+        description: '',
+        teacherId: ''
     });
 
     const handleChange = (e) => {
@@ -29,15 +29,18 @@ const CreateCourse = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log('Creating course:', formData);
+        try {
 
-        // TODO:
-        // POST /api/courses
+            await createCourse(formData);
 
-        navigate('/admin/course-management');
+            navigate('/admin/course-management');
+
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -73,6 +76,24 @@ const CreateCourse = () => {
                 className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 space-y-8"
             >
 
+            {/* Course Code */}
+            <div>
+                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
+                    <BookOpen size={16} />
+                    Course Code
+                </label>
+
+                <input
+                    type="text"
+                    name="courseCode"
+                    value={formData.courseCode}
+                    onChange={handleChange}
+                    placeholder="CRS-101"
+                    required
+                    className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+            </div>
+
                 {/* Course Title */}
                 <div>
                     <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
@@ -86,77 +107,6 @@ const CreateCourse = () => {
                         value={formData.title}
                         onChange={handleChange}
                         placeholder="Enterprise Java & Spring Boot"
-                        required
-                        className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                </div>
-
-                {/* Department + Level */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                    <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
-                            <Building2 size={16} />
-                            Department
-                        </label>
-
-                        {/* <input
-                            type="text"
-                            name="department"
-                            value={formData.department}
-                            onChange={handleChange}
-                            placeholder="Backend Engineering"
-                            required
-                            className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        /> */}
-                        <select
-                                name="department"
-                                value={formData.department}
-                                onChange={handleChange}
-                        >
-                            <option value="">Select Department</option>
-                            <option value="Backend Engineering">Backend Engineering</option>
-                            <option value="Frontend Engineering">Frontend Engineering</option>
-                            <option value="Mobile Development">Mobile Development</option>
-                            <option value="Cloud & DevOps">Cloud & DevOps</option>
-                            <option value="Data Science">Data Science</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
-                            <Award size={16} />
-                            Level
-                        </label>
-
-                        <select
-                            name="level"
-                            value={formData.level}
-                            onChange={handleChange}
-                            className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        >
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                {/* Modules */}
-                <div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
-                        <Layers size={16} />
-                        Number of Modules
-                    </label>
-
-                    <input
-                        type="number"
-                        min="1"
-                        name="modules"
-                        value={formData.modules}
-                        onChange={handleChange}
-                        placeholder="12"
                         required
                         className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
@@ -179,7 +129,7 @@ const CreateCourse = () => {
                     />
                 </div>
 
-                {/* Actions */}
+                  {/* Actions */}
                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
 
                     <button
@@ -200,7 +150,7 @@ const CreateCourse = () => {
 
                 </div>
 
-            </form>
+             </form>
 
         </div>
     );

@@ -71,10 +71,11 @@ function App() {
             <Route path="users" element={<AdminUsers />} />
             {/* course management */}
             {/* Course Management */}
-            <Route path="course-management">
+            <Route path="course-management" element={<Outlet />}>
               <Route index element={<AdminCourses />} />
               <Route path="new" element={<CreateCourse />} />
               <Route path=":courseId" element={<CourseDetails />} />
+              <Route path=":courseId/edit" element={<EditCourse />} />
             </Route>
             {/* <Route path="courses" element={<AdminCourses />} /> */}
             {/* <Route path="enrollments" element={<AdminEnrollments />} /> */}

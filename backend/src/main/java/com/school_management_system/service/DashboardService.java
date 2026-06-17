@@ -1,6 +1,6 @@
 package com.school_management_system.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 
 
@@ -27,8 +27,8 @@ public class DashboardService {
         log.info("Fetching dashboard metrics data");
 
         // 1. Keep these as LocalDateTime for User and Course entities
-        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
-        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+        LocalDate oneWeekAgo = LocalDate.now().minusDays(7);
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
 
         // Fetch Student Metrics
         long totalStudents = userRepository.countByRole(Role.STUDENT);
@@ -46,11 +46,11 @@ public class DashboardService {
         StatMetric coursesDetail = new StatMetric(totalCourses, "+" + newCourses + " new courses");
 
         // 2. Extract just the LocalDate portion specifically for the Enrollment entity 👇
-        java.time.LocalDate enrollmentDateThreshold = oneMonthAgo.toLocalDate();
+        // java.time.LocalDate enrollmentDateThreshold = oneMonthAgo;
 
         // Fetch Enrollment Metrics using the correct LocalDate parameter
         long totalEnrollments = enrollmentRepository.count();
-        long newEnrollments = enrollmentRepository.countByCreatedAtAfter(enrollmentDateThreshold); 
+        long newEnrollments = enrollmentRepository.countByCreatedAtAfter(oneMonthAgo); 
         StatMetric enrollmentsDetail = new StatMetric(totalEnrollments, "+" + newEnrollments + " this month");
 
         return new DashboardStats(studentsDetail, teachersDetail, coursesDetail, enrollmentsDetail);
