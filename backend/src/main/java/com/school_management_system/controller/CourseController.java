@@ -7,11 +7,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.school_management_system.dto.CourseRequest;
 import com.school_management_system.dto.CourseResponse;
 import com.school_management_system.dto.CreateCourseRequest;
 import com.school_management_system.dto.CourseDetailsResponse;
@@ -44,5 +43,11 @@ public class CourseController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CourseDetailsResponse> getCourseById( @PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourseById(id));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public CourseResponse update(@PathVariable Long id, @RequestBody @Valid CreateCourseRequest request) {
+        return courseService.updateCourse(id, request);
     }
 }

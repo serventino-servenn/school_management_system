@@ -11,7 +11,7 @@ import DashboardLayout from './components/AdminLayout';
 import AdminHome from './pages/admin/AdminHome';
 import AdminUsers from './pages/admin/users/AdminUsers';
 import AdminCourses from './pages/admin/courses/AdminCourses';
-import CreateCourse from './pages/admin/courses/CreateCourse';
+import CourseForm from './pages/admin/courses/CourseForm';
 import CourseDetails from './pages/admin/courses/CourseDetails';
 // import AdminEnrollments from './pages/AdminEnrollment';
 import AdminAnalytics from './pages/admin/analytics/AdminAnalytics';
@@ -73,9 +73,9 @@ function App() {
             {/* Course Management */}
             <Route path="course-management" element={<Outlet />}>
               <Route index element={<AdminCourses />} />
-              <Route path="new" element={<CreateCourse />} />
+              <Route path="new" element={<CourseForm/>} />
               <Route path=":courseId" element={<CourseDetails />} />
-              <Route path=":courseId/edit" element={<EditCourse />} />
+              <Route path=":courseId/edit" element={<CourseForm/>} />
             </Route>
             {/* <Route path="courses" element={<AdminCourses />} /> */}
             {/* <Route path="enrollments" element={<AdminEnrollments />} /> */}
