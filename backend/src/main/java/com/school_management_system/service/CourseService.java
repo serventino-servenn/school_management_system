@@ -131,6 +131,45 @@ public class CourseService {
         return response;
     }
 
+    private void applyCourseData(
+                Course course,
+                CreateCourseRequest request
+        ) {
+
+                course.setCourseCode(request.courseCode);
+                course.setTitle(request.title);
+                course.setDescription(request.description);
+
+                if (request.teacherId != null) {
+
+                        User teacher = userRepository.findById(request.teacherId)
+                                .orElseThrow(() ->
+                                        new ResourceNotFoundException(
+                                                "Teacher not found"
+                                        ));
+
+                        course.setTeacher(teacher);
+
+                } else {
+
+                        course.setTeacher(null);
+
+                }
+    }
+
+    //DELETE course
+    public void deleteCourse(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+        
+        if (enrollmentRepository.existsByCourseId(id)) {
+                throw new IllegalStateException(
+                        "Cannot delete course with enrolled students"
+        );
+    }
+
+        courseRepository.delete(course);
+    }
 
     private CourseResponse mapToResponse(Course c) {
         CourseResponse r = new CourseResponse();
@@ -149,29 +188,5 @@ public class CourseService {
         return r;
     }
 
-    private void applyCourseData(
-        Course course,
-        CreateCourseRequest request
-    ) {
-
-        course.setCourseCode(request.courseCode);
-        course.setTitle(request.title);
-        course.setDescription(request.description);
-
-        if (request.teacherId != null) {
-
-                User teacher = userRepository.findById(request.teacherId)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Teacher not found"
-                                ));
-
-                course.setTeacher(teacher);
-
-        } else {
-
-                course.setTeacher(null);
-
-        }
-    }
+    
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,9 +29,9 @@ public class CourseController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
-    public CourseResponse create(@RequestBody @Valid CreateCourseRequest request) {
+    public ResponseEntity<CourseResponse> create(@RequestBody @Valid CreateCourseRequest request) {
         System.err.println("Creating course: " + request.title);
-        return courseService.createCourse(request);
+        return ResponseEntity.ok(courseService.createCourse(request));
     }
 
     @GetMapping
@@ -47,7 +48,14 @@ public class CourseController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public CourseResponse update(@PathVariable Long id, @RequestBody @Valid CreateCourseRequest request) {
-        return courseService.updateCourse(id, request);
+    public ResponseEntity<CourseResponse> update(@PathVariable Long id, @RequestBody @Valid CreateCourseRequest request) {
+        return ResponseEntity.ok(courseService.updateCourse(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+        courseService.deleteCourse(id);
+        return ResponseEntity.noContent().build();
     }
 }

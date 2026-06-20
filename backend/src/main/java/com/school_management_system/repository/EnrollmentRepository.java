@@ -15,6 +15,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     long countByCreatedAtAfter(LocalDate date); 
 
+    boolean existsByCourseId(Long courseId);
+
     List<Enrollment> findByStudentId(Long studentId);
 
     List<Enrollment> findByCourseId(Long courseId);

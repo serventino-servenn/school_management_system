@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Plus, Search, Filter, Edit2, Trash2, ShieldCheck, Mail, Calendar, UserCheck } from 'lucide-react';
+import { 
+    Plus, Search, Filter, Edit2, Trash2, ShieldCheck, Mail, Calendar, UserCheck,
+    Users
+} from 'lucide-react';
+import { getUsers } from '../../../services/api';
 
 const AdminUsers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [users, setUsers] = useState([]);
     
     // Mock Student Database State
     const [students, setStudents] = useState([
@@ -42,36 +47,53 @@ const AdminUsers = () => {
 
     return (
         <div className="space-y-6">
-            {/* 📁 Header Row with Context Actions */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            {/* Page Header */}
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
                 <div>
-                    <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">System Directory</p>
-                    <h2 className="text-2xl font-bold text-slate-800">Student Profiles</h2>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Administration
+                    </p>
+
+                    <h1 className="text-3xl font-bold text-slate-800 mt-2">
+                        User Management
+                    </h1>
+
+                    <p className="text-slate-500 mt-2">
+                        Manage students, teachers, and administrators across the platform.
+                    </p>
                 </div>
-                <button 
-                    onClick={() => setIsModalOpen(true)}
-                    className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition shadow-sm shadow-indigo-600/10 self-start sm:self-auto"
+
+                <button
+                    className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl font-medium transition"
                 >
-                    <Plus size={16} />
-                    Onboard New Student
+                    <Users size={16} />
+                    Add User
                 </button>
+
             </div>
-            {/* 🔍 Search and Filtering Utility Bar */}
-            <div className="flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-xl border border-slate-200/60 shadow-sm">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-2.5 text-slate-400" size={18} />
-                    <input 
-                        type="text" 
-                        placeholder="Search students by name or record ID..." 
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-slate-50 pl-10 pr-4 py-2 rounded-xl text-sm border border-slate-200 focus:outline-none focus:border-indigo-500 focus:bg-white transition"
+            {/* Search & Filters */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+
+                <div className="flex flex-col md:flex-row gap-4">
+
+                    <input
+                        type="text"
+                        placeholder="Search by name or email..."
+                        className="flex-1 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
+
+                    <select
+                        className="border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                        <option value="">All Roles</option>
+                        <option value="ADMIN">Admin</option>
+                        <option value="TEACHER">Teacher</option>
+                        <option value="STUDENT">Student</option>
+                    </select>
+
                 </div>
-                <button className="inline-flex items-center justify-center gap-2 border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-medium text-slate-600 transition">
-                    <Filter size={16} />
-                    Filter Batches
-                </button>
+
             </div>
             {/* 📊 High-Density SaaS Data Table Container */}
             <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">

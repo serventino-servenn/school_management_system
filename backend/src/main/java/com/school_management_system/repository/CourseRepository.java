@@ -10,4 +10,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     boolean existsByCourseCode(String courseCode);
      long countByCreatedAtAfter(LocalDate dateTime);
+     
 }

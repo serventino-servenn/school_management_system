@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCourseById } from '../../../services/api';
+import { getCourseById,deleteCourse } from '../../../services/api';
 import {
     ArrowLeft,
     BookOpen,
@@ -10,15 +10,18 @@ import {
     Pencil,
     Plus,
     Award,
-    Building2
+    Building2,
+    Trash2
 } from 'lucide-react';
 
 const CourseDetails = () => {
     const navigate = useNavigate();
     const { courseId } = useParams();
+
     const [course, setCourse] = useState(null);
     const [isLoading, setLoading] = useState(true);
- 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -37,6 +40,18 @@ const CourseDetails = () => {
 
         fetchCourse();
     }, [courseId]);
+
+    const handleDelete = async () => {
+            try {
+                setIsDeleting(true);
+                await deleteCourse(course.id);
+                navigate('/admin/course-management');
+            } catch (error) {
+                console.error('Error deleting course:', error);
+            } finally {
+                setIsDeleting(false);
+            }
+    };  
 
      return (
             <div className="space-y-8">
@@ -78,19 +93,22 @@ const CourseDetails = () => {
                                         {course.description}
                                     </p>
                                 </div>
-
-                                {/* <button className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition">
-                                    <Pencil size={16} />
-                                    Edit Course
-                                </button> */}
-                                <button
-                                    onClick={() => navigate(`/admin/course-management/${course.id}/edit`)}
-                                    className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition"
-                                >
-                                    <Pencil size={16} />
-                                    Edit Course
-                                </button>
-
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => navigate(`/admin/course-management/${course.id}/edit`)}
+                                        className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition"
+                                    >
+                                        <Pencil size={16} />
+                                        Edit Course
+                                    </button>
+                                    <button
+                                        onClick={() => setShowDeleteModal(true)}
+                                        className="inline-flex items-center gap-2 border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-xl text-sm font-medium transition"
+                                    >
+                                        <Trash2 size={16} />
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -246,6 +264,40 @@ const CourseDetails = () => {
 
                         </div>
                     </>
+                )}
+
+                {/* modal for delete confirmation */}
+                {showDeleteModal && (
+                    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                            <h3 className="font-bold text-slate-800 mb-2">Delete Course</h3>
+                            <p className="text-slate-500 mt-3">
+                                Are you sure you want to delete this course
+                                <span className="font-semibold text-slate-800">
+                                    {' '}{course.title}
+                                </span>
+                                ?
+                            </p>
+                            <p className="text-sm text-red-500 mt-2">
+                                This action cannot be undone.
+                            </p>
+                            <div className="flex justify-end gap-3 mt-8">
+                                <button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={isDeleting}
+                                    className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
+                                >
+                                   {isDeleting ? 'Deleting...' : 'Yes, Delete'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 )}
             </div>
     );
