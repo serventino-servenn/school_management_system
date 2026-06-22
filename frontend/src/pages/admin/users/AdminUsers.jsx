@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { 
     Plus, Search, Filter, Edit2, Trash2, ShieldCheck, Mail, Calendar, UserCheck,
     Users
@@ -9,41 +9,35 @@ const AdminUsers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [users, setUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(5); 
     
-    // Mock Student Database State
-    const [students, setStudents] = useState([
-        { id: "STU-001", name: "Sarah Jenkins", email: "sarah.j@school.com", batch: "Batch A", status: "Active", enrolled: "Sept 2025" },
-        { id: "STU-002", name: "Alex Rivera", email: "a.rivera@school.com", batch: "Batch B", status: "Active", enrolled: "Oct 2025" },
-        { id: "STU-003", name: "Marcus Chen", email: "m.chen@school.com", batch: "Batch A", status: "Suspended", enrolled: "Sept 2025" },
-        { id: "STU-004", name: "Emily Watson", email: "emily.w@school.com", batch: "Batch C", status: "Active", enrolled: "Jan 2026" },
-    ]);
+    
+        const indexOfLastUser = currentPage * rowsPerPage;
+        const indexOfFirstUser = indexOfLastUser - rowsPerPage;
 
-    // Form State for onboarding new student
-    const [newStudent, setNewStudent] = useState({ name: '', email: '', batch: 'Batch A' });
+        const currentUsers = users.slice(
+            indexOfFirstUser,
+            indexOfLastUser
+        );
+    
+    const handleToggleStatus = (userId) => {
+        // Implement status toggle logic here (e.g., API call to update user status)
+        console.log(`Toggling status for user ID: ${userId}`);
+    }
 
-    const handleCreateStudent = (e) => {
-        e.preventDefault();
-        const studentId = `STU-00${students.length + 1}`;
-        const formattedDate = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-        
-        const createdUser = {
-            id: studentId,
-            name: newStudent.name,
-            email: newStudent.email,
-            batch: newStudent.batch,
-            status: "Active",
-            enrolled: formattedDate
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const {data} = await getUsers();
+                setUsers(data);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
         };
 
-        setStudents([...students, createdUser]);
-        setNewStudent({ name: '', email: '', batch: 'Batch A' });
-        setIsModalOpen(false); // Close operational modal
-    };
-
-    const filteredStudents = students.filter(student => 
-        student.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        student.id.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+        fetchUsers();
+    }, []);
 
     return (
         <div className="space-y-6">
@@ -96,85 +90,189 @@ const AdminUsers = () => {
 
             </div>
             {/* 📊 High-Density SaaS Data Table Container */}
-            <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-semibold uppercase tracking-wider">
-                                <th className="px-6 py-4">Student ID</th>
-                                <th className="px-6 py-4">Full Name</th>
-                                <th className="px-6 py-4">Cohort Batch</th>
-                                <th className="px-6 py-4">Enrollment Date</th>
-                                <th className="px-6 py-4">System Status</th>
-                                <th className="px-6 py-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
-                            {filteredStudents.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6" className="text-center py-12 text-slate-400">
-                                        No student records found matching the criteria.
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredStudents.map((student) => (
-                                    <tr key={student.id} className="hover:bg-slate-50/50 transition">
-                                        {/* Student ID Column */}
-                                        <td className="px-6 py-4 font-mono text-xs text-slate-500">
-                                            {student.id}
-                                        </td>
-                                        
-                                        {/* Full Name & Email Column */}
+            {/* Users Table */}
+             <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+
+                    <div className="overflow-x-auto">
+
+                        <table className="w-full">
+
+                            <thead className="bg-slate-50 border-b border-slate-200">
+                                    <tr>
+
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">
+                                            User
+                                        </th>
+
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">
+                                            Email Address
+                                        </th>
+
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">
+                                            Phone Number
+                                        </th>
+
+                                        <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase">
+                                            Role
+                                        </th>
+
+                                        <th className="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase">
+                                            Status
+                                        </th>
+
+                                        <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase">
+                                            Actions
+                                        </th>
+
+                                    </tr>
+                            </thead>
+
+                            <tbody className="divide-y divide-slate-100">
+
+                                {currentUsers.map((user) => (
+                                    <tr
+                                        key={user.id}
+                                        className="hover:bg-slate-50 transition-colors"
+                                    >
+
+                                        {/* User Info */}
                                         <td className="px-6 py-4">
-                                            <div className="font-semibold text-slate-800">{student.name}</div>
-                                            <div className="text-slate-400 text-xs flex items-center gap-1 mt-0.5">
-                                                <Mail size={12} /> {student.email}
+                                            <div className="flex items-center gap-3">
+
+                                                <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center font-semibold text-indigo-700">
+                                                    {user.name.charAt(0)}
+                                                </div>
+
+                                                <span className="font-medium text-slate-900">
+                                                    {user.name}
+                                                </span>
+
                                             </div>
                                         </td>
-                                        
-                                        {/* Cohort Column */}
-                                        <td className="px-6 py-4 font-medium text-slate-600">
-                                            {student.batch}
-                                        </td>
-                                        
-                                        {/* Enrollment Date Column */}
-                                        <td className="px-6 py-4 text-slate-500">
-                                            <div className="flex items-center gap-1.5">
-                                                <Calendar size={14} className="text-slate-400" />
-                                                {student.enrolled}
-                                            </div>
-                                        </td>
-                                        
-                                        {/* System Status Pill Column */}
+
+                                        {/* Role */}
                                         <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
-                                                student.status === 'Active' 
-                                                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
-                                                    : 'bg-red-50 text-red-700 border border-red-100'
-                                            }`}>
-                                                <UserCheck size={12} />
-                                                {student.status}
+                                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+                                                {user.role}
                                             </span>
                                         </td>
-                                        
-                                        {/* Action Operations Column */}
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-indigo-600 transition">
-                                                    <Edit2 size={16} />
+
+                                        {/* Status */}
+                                        {/* <td className="px-6 py-4">
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                    user.active
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
+                                                }`}
+                                            >
+                                                {user.active ? "Active" : "Inactive"}
+                                            </span>
+                                        </td> */}
+
+                                        <td className="px-6 py-4 text-center">
+                                            <label className="relative inline-flex items-center cursor-pointer">
+
+                                                <input
+                                                    type="checkbox"
+                                                    checked={user.active}
+                                                    onChange={() => handleToggleStatus(user.id)}
+                                                    className="sr-only peer"
+                                                />
+
+                                                <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-green-500 transition-colors"></div>
+
+                                                <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+
+                                            </label>
+                                        </td>
+                                        {/* Created */}
+                                        <td className="px-6 py-4 text-sm text-slate-600">
+                                            {user.createdAt}
+                                        </td>
+
+                                        {/* Actions */}
+                                        <td className="px-6 py-4">
+                                            <div className="flex justify-end gap-2">
+
+                                                <button className="px-3 py-1.5 text-sm border rounded-lg hover:bg-slate-100">
+                                                    View
                                                 </button>
-                                                <button className="p-1.5 hover:bg-red-50 rounded-lg text-slate-400 hover:text-red-600 transition">
-                                                    <Trash2 size={16} />
+
+                                                <button className="px-3 py-1.5 text-sm border rounded-lg hover:bg-slate-100">
+                                                    Edit
                                                 </button>
+
+                                                <button className="px-3 py-1.5 text-sm border border-red-200 text-red-600 hover:bg-red-50 rounded-lg">
+                                                    Delete
+                                                </button>
+
                                             </div>
                                         </td>
+
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
             </div>
+            {/* Pagination */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
+
+                {/* Left Side */}
+                <div className="flex items-center gap-4">
+
+                    <p className="text-sm text-slate-500">
+                        Showing 1–5 of 22 users
+                    </p>
+
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm text-slate-500">
+                            Rows per page
+                        </span>
+
+                        <select
+                            className="border border-slate-300 rounded-lg px-3 py-2 text-sm"
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                {/* Right Side */}
+                <div className="flex items-center gap-2">
+
+                    <button className="px-4 py-2 border rounded-lg">
+                        Previous
+                    </button>
+
+                    <button className="w-10 h-10 rounded-lg bg-indigo-600 text-white">
+                        1
+                    </button>
+
+                    <button className="w-10 h-10 rounded-lg border">
+                        2
+                    </button>
+
+                    <button className="w-10 h-10 rounded-lg border">
+                        3
+                    </button>
+
+                    <button className="px-4 py-2 border rounded-lg">
+                        Next
+                    </button>
+
+                </div>
+
+            </div>
+
             {/* 🛠️ Modern Pop-up Modal Form */}
         {isModalOpen && (
             <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
