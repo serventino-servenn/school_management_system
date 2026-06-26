@@ -7,7 +7,7 @@ import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Layouts and Pages
-import DashboardLayout from './components/AdminLayout';
+import DashboardLayout from './components/admin/AdminLayout';
 import AdminHome from './pages/admin/AdminHome';
 import AdminUsers from './pages/admin/users/AdminUsers';
 import AdminCourses from './pages/admin/courses/AdminCourses';

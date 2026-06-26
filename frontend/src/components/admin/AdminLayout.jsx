@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { BookOpen, LayoutDashboard, Users, ClipboardList, LogOut, Shield,  TrendingUp} from 'lucide-react';
-import { useAuth } from '../context/AuthContext'; // Adjust path based on your project structure
+import { useAuth } from '../../context/AuthContext'; // Adjust path based on your project structure
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
