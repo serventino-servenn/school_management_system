@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { X, UserPlus, Shield, Mail, User, Lock, Eye, EyeOff } from 'lucide-react';
+import { UserPlus, X, User, Mail, Lock, Shield, Eye, EyeOff,ChevronDown} from 'lucide-react';
 
 export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -8,7 +9,7 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
     lastName: '',
     email: '',
     password: '',
-    role: 'Standard',
+    role: 'STUDENT',
   });
 
   if (!isOpen) return null;
@@ -17,13 +18,8 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
     e.preventDefault();
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) return;
     
-    onSave({
-      ...formData,
-      id: `USR-${Math.floor(100000 + Math.random() * 900000)}`,
-      createdAt: new Date().toISOString(),
-    });
+    onSave(formData);
     
-    // Clear state inputs cleanly
     setFormData({ firstName: '', lastName: '', email: '', password: '', role: 'Standard' });
     setShowPassword(false);
     onClose();
@@ -31,42 +27,47 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop with dynamic frosted glass blur */}
+      {/* Soft, clean dark overlay */}
       <div 
-        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-slate-900/30 backdrop-blur-[2px] transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal Card wrapper with premium slide/scale animation anchoring */}
-      <div className="bg-white w-full max-w-md rounded-2xl border border-slate-100 shadow-xl relative z-10 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200">
+      {/* Redesigned Card Wrapper */}
+      <div className="bg-white w-full max-w-md rounded-2xl border border-slate-200/60 shadow-2xl relative z-10 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Header Ribbon using your dominant gradient anchor aesthetic */}
-        <div className="bg-gradient-to-r from-indigo-900 to-slate-900 p-6 text-white relative overflow-hidden">
-          <div className="relative z-10">
-            <h3 className="text-xl font-bold flex items-center gap-2">
-              <UserPlus size={20} className="text-indigo-200" />
-              Provision New Operator
-            </h3>
-            <p className="text-indigo-200 text-xs mt-1">
-              Assign identity credentials and core access permission infrastructure rules.
-            </p>
+        {/* Bright, Modern Light Header */}
+        <div className="flex items-start justify-between p-6 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl">
+              <UserPlus size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-slate-900">
+                New Operator
+              </h3>
+              <p className="text-slate-500 text-xs mt-0.5">
+                Set credentials and core access permissions.
+              </p>
+            </div>
           </div>
           
           <button 
+            type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 rounded-lg text-indigo-200 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Operational Multi-Input Form Configuration */}
+        {/* Clean Form Component */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           
-          {/* Row 1: Split Name Field Layout */}
+          {/* Split Name Input */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
                 <User size={12} className="text-slate-400" /> First Name
               </label>
               <input
@@ -75,12 +76,12 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
                 placeholder="Alex"
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-900/30 focus:bg-white focus:shadow-sm transition"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <label className="text-xs font-semibold text-slate-700">
                 Last Name
               </label>
               <input
@@ -89,29 +90,29 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
                 placeholder="Morgan"
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-900/30 focus:bg-white focus:shadow-sm transition"
+                className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
               />
             </div>
           </div>
 
-          {/* Row 2: Target Email Credential Field */}
+          {/* Email Input */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <Mail size={12} className="text-slate-400" /> Contact Endpoint Email
+            <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+              <Mail size={12} className="text-slate-400" /> Email Address
             </label>
             <input
               type="email"
               required
-              placeholder="operator@domain.school"
+              placeholder="operator@domain.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-900/30 focus:bg-white focus:shadow-sm transition"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
             />
           </div>
 
-          {/* Row 3: Security Credentials Field with Interactive Toggle */}
+          {/* Password Input */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+            <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
               <Lock size={12} className="text-slate-400" /> Access Password
             </label>
             <div className="relative">
@@ -121,48 +122,51 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
                 placeholder="••••••••••••"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-4 pr-11 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-900/30 focus:bg-white focus:shadow-sm transition"
+                className="w-full bg-white border border-slate-200 rounded-xl pl-3.5 pr-11 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 transition-colors"
+                className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 transition-colors"
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
-          {/* Row 4: Role Clearance Infrastructure Selector */}
+          {/* Role Dropdown */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <Shield size={12} className="text-slate-400" /> Clearance Level Role
+            <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+              <Shield size={12} className="text-slate-400" /> Clearance Role
             </label>
             <select
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-indigo-900/30 focus:bg-white focus:shadow-sm transition cursor-pointer"
+              className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition cursor-pointer appearance-none"
             >
-              <option value="Standard">Standard Operator</option>
-              <option value="Manager">System Manager</option>
-              <option value="Admin">Platform Administrator</option>
+              <option value="Standard">STUDENT</option>
+              <option value="Manager">TEACHER</option>
+              <option value="Admin">ADMIN</option>
             </select>
+            <div className="absolute right-3 top-2.5 text-slate-400 pointer-events-none">
+                <ChevronDown size={16} />
+             </div>
           </div>
 
-          {/* Action Control Button Ribbon */}
-          <div className="flex justify-end items-center gap-3 pt-3 border-t border-slate-50">
+          {/* Action Control Button Strip */}
+          <div className="flex justify-end items-center gap-2 pt-4 mt-2 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-sm font-semibold text-slate-600 bg-white border border-slate-100 hover:bg-slate-50 rounded-xl transition duration-200"
+              className="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition shadow-sm"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-900 hover:bg-slate-900 rounded-xl transition duration-200 shadow-sm active:scale-[0.98]"
+              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition shadow-sm shadow-indigo-100 active:scale-[0.98]"
             >
-              Confirm Provision
+              Create Operator
             </button>
           </div>
 

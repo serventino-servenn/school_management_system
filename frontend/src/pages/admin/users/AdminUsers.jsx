@@ -4,7 +4,7 @@ import UserControlBar from '../../../components/admin/UserControlBar';
 import UserTable from '../../../components/admin/UserTable';
 import PaginationFooter from '../../../components/admin/PaginationFooter';
 import { Users } from 'lucide-react';
-import { getUsers } from '../../../services/api';
+import { getUsers,register} from '../../../services/api';
 import CreateOperatorModal from '../../../components/admin/CreateOperatorModal';
 
 
@@ -18,7 +18,7 @@ const AdminUsers = () => {
   const [selectedRole, setSelectedRole] = useState('All Status');
 
   // Control Bar Roles Configuration map setup matches your selector components loop expectations
-  const rolesList = ['All Status', 'Standard', 'Manager', 'Admin'];
+  const rolesList = ['All Status', 'STUDENT', 'TEACHER', 'ADMIN'];
 
   // 2. Client-side Filtering Logic (Filters users based on search bar text and role toggle)
   const filteredUsers = users.filter((user) => {
@@ -48,8 +48,16 @@ const AdminUsers = () => {
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   // 4. Action Handler: Save New Provisioned Operator directly into local view array frame
-  const handleSaveUser = (newOperator) => {
-    setUsers((prevUsers) => [newOperator, ...prevUsers]);
+  const handleSaveUser = async(newOperator) => {
+    try {
+      const newUser = await register(newOperator);
+      const{savedUser} = newUser.data;
+      console.log('New user saved:', savedUser);
+      setUsers((prevUsers) => [savedUser, ...prevUsers]);
+      setCurrentPage(1);
+    } catch (error) {
+        console.error('Failed to provision and save new operator:', error);
+    }
   };
 
   // 5. Action Handler Placeholder for Table row triggers
