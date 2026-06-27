@@ -1,4 +1,4 @@
-package com.school_management_system.dto;
+package com.school_management_system.dto.user;
 
 import com.school_management_system.entity.Role;
 
