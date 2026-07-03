@@ -1,29 +1,76 @@
 
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { UserPlus, X, User, Mail, Lock, Shield, Eye, EyeOff,ChevronDown} from 'lucide-react';
 
-export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
+export default function CreateOperatorModal({ isOpen, onClose, onSave, user }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const isEditMode = !!user;
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     role: 'STUDENT',
-  });
+ });
 
-  if (!isOpen) return null;
+  
+  useEffect(() => {
+    if (user) {
+        setFormData({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: '',
+            role: user.role,
+        });
+    } else {
+        setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            role: 'STUDENT',
+        });
+    }
+}, [user]);
 
-  const handleSubmit = (e) => {
+
+const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) return;
-    
-    onSave(formData);
-    
-    setFormData({ firstName: '', lastName: '', email: '', password: '', role: 'Standard' });
-    setShowPassword(false);
-    onClose();
-  };
+    setLoading(true);
+
+    try {
+        if (isEditMode) {
+            await onSave(user.id, formData); // UPDATE
+        } else {
+            await onSave(formData); // CREATE
+        }
+
+        setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            role: 'STUDENT',
+        });
+
+        setShowPassword(false);
+        onClose();
+
+    } catch (error) {
+        console.error(
+            isEditMode ? "Error updating user" : "Error creating user",
+            error
+        );
+    } finally {
+        setLoading(false);
+    }
+};
+
+    if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -43,8 +90,8 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
               <UserPlus size={20} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900">
-                New Operator
+              <h3>
+                {user ? "Edit User" : "New Operator"}
               </h3>
               <p className="text-slate-500 text-xs mt-0.5">
                 Set credentials and core access permissions.
@@ -144,9 +191,10 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
               className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition cursor-pointer appearance-none"
             >
-              <option value="Standard">STUDENT</option>
-              <option value="Manager">TEACHER</option>
-              <option value="Admin">ADMIN</option>
+              <option value="ALL">All Roles</option>
+              <option value="STUDENT">STUDENT</option>
+              <option value="TEACHER">TEACHER</option>
+              <option value="ADMIN">ADMIN</option>
             </select>
             <div className="absolute right-3 top-2.5 text-slate-400 pointer-events-none">
                 <ChevronDown size={16} />
@@ -166,7 +214,7 @@ export default function CreateOperatorModal({ isOpen, onClose, onSave }) {
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition shadow-sm shadow-indigo-100 active:scale-[0.98]"
             >
-              Create Operator
+              {user ? "Save Changes" : "Create Operator"}
             </button>
           </div>
 

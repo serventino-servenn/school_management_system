@@ -2,13 +2,15 @@ import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function PaginationFooter({
-  totalItems,
-  rowsPerPage,
-  currentPage,
-  setCurrentPage,
+    totalItems,
+    totalPages,
+    rowsPerPage,
+    setRowsPerPage,
+    currentPage,
+    setCurrentPage,
 }) {
   // Compute total pages needed based on filtered item volume
-  const totalPages = Math.ceil(totalItems / rowsPerPage) || 1;
+  // const totalPages = Math.ceil(totalItems / rowsPerPage) || 1;
 
   // Layout calculations for current displayed items bounds
   const startRange = totalItems === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
@@ -33,26 +35,54 @@ export default function PaginationFooter({
 
     {/* Right side: Interactive navigation buttons */}
     {/* Optimized Pagination Layout Component */}
-    <div className="flex items-center gap-1.5">
-      <button
-        onClick={handlePrevious}
-        disabled={currentPage === 1}
-        className="p-2 rounded-xl border border-slate-100 bg-white text-slate-600 hover:bg-indigo-900 hover:text-white transition shadow-sm disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-slate-600"
-      >
-        <ChevronLeft size={16} />
-      </button>
-      
-      <div className="text-xs font-semibold px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-600 font-mono">
-        {currentPage} / {totalPages}
-      </div>
+    <div className="flex items-center gap-4">
 
-      <button
-        onClick={handleNext}
-        disabled={currentPage === totalPages}
-        className="p-2 rounded-xl border border-slate-100 bg-white text-slate-600 hover:bg-indigo-900 hover:text-white transition shadow-sm disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-slate-600"
-      >
-        <ChevronRight size={16} />
-      </button>
+    {/* Rows Per Page */}
+    <div className="flex items-center gap-2">
+
+        <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Rows
+        </span>
+
+        <select
+            value={rowsPerPage}
+            onChange={(e) => {
+                setRowsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+            }}
+            className="px-3 py-2 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+        </select>
+
+    </div>
+
+    {/* Pagination */}
+    <div className="flex items-center gap-1.5">
+
+        <button
+            onClick={handlePrevious}
+            disabled={currentPage === 1}
+            className="p-2 rounded-xl border border-slate-100 bg-white text-slate-600 hover:bg-indigo-900 hover:text-white transition shadow-sm disabled:opacity-40"
+        >
+            <ChevronLeft size={16} />
+        </button>
+
+        <div className="text-xs font-semibold px-3 py-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-600 font-mono">
+            {currentPage} / {totalPages}
+        </div>
+
+        <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="p-2 rounded-xl border border-slate-100 bg-white text-slate-600 hover:bg-indigo-900 hover:text-white transition shadow-sm disabled:opacity-40"
+        >
+            <ChevronRight size={16} />
+        </button>
+
+    </div>
     </div>
 
   </div>

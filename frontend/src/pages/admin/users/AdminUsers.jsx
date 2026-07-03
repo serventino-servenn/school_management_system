@@ -10,82 +10,76 @@ import CreateOperatorModal from '../../../components/admin/CreateOperatorModal';
 
 const AdminUsers = () => {
   // 1. Core Component States
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRole, setSelectedRole] = useState("ALL");
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5); 
-  const [selectedRole, setSelectedRole] = useState('All Status');
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   // Control Bar Roles Configuration map setup matches your selector components loop expectations
-  const rolesList = ['All Status', 'STUDENT', 'TEACHER', 'ADMIN'];
+  const rolesList = ['ALL', 'STUDENT', 'TEACHER', 'ADMIN'];
+// );
 
-  // 2. Client-side Filtering Logic (Filters users based on search bar text and role toggle)
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch = 
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesRole = 
-      selectedRole === 'All Status' || 
-      user.role?.toLowerCase() === selectedRole.toLowerCase();
+const fetchUsers = async () => {
+    try {
+        setLoading(true);
 
-    return matchesSearch && matchesRole;
-  });
+        const { data } = await getUsers(currentPage - 1, rowsPerPage);
+        setUsers(data.content);
+        setTotalPages(data.totalPages);
+        setTotalItems(data.totalElements);
 
-  // 3. Pagination Math (Uses filtered results so page count fixes itself when searching)
-  const totalPages = Math.ceil(filteredUsers.length / rowsPerPage) || 1;
-  
+    } catch (error) {
+        console.error("Error fetching users:", error);
+
+    } finally {
+        setLoading(false);
+    }
+};
+
+const handleSaveUser = async (formData) => {
+    if (selectedUser) {
+        await updateUser(selectedUser.id, formData);
+    } else {
+        await createUser(formData);
+    }
+
+    await fetchUsers();
+    handleCloseModal();
+};
+
+const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+};     
+
+const handleToggleStatus = (userId) => {
+    console.log(`Toggling status for user ${userId}`);
+};
+
+
+useEffect(() => {
+    const delay = setTimeout(() => {
+        fetchUsers();
+    }, 150);
+
+    return () => clearTimeout(delay);
+}, [currentPage, rowsPerPage]);
+
   // Guard clause: Reset page dynamically if search boundaries truncate current view selection rules
   useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(1);
+    if (currentPage > totalPages && totalPages > 0) {
+        setCurrentPage(totalPages);
     }
-  }, [searchTerm, selectedRole, totalPages, currentPage]);
+  }, [currentPage, totalPages]);  
 
-  const indexOfLastUser = currentPage * rowsPerPage;
-  const indexOfFirstUser = indexOfLastUser - rowsPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  // 4. Action Handler: Save New Provisioned Operator directly into local view array frame
-  const handleSaveUser = async(newOperator) => {
-    try {
-      const newUser = await register(newOperator);
-      const{savedUser} = newUser.data;
-      console.log('New user saved:', savedUser);
-      setUsers((prevUsers) => [savedUser, ...prevUsers]);
-      setCurrentPage(1);
-    } catch (error) {
-        console.error('Failed to provision and save new operator:', error);
-    }
-  };
-
-  // 5. Action Handler Placeholder for Table row triggers
-  const handleToggleStatus = (userId) => {
-    console.log(`Toggling status for user ID: ${userId}`);
-  };
-
-  // 6. API Fetch Hook (Using standard lifecycle wrappers)
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        // Mock fallback check array payload injection if API call is unconfigured initially
-        const { data } = await getUsers();
-        setUsers(data);
-        
-        // Sample initial dataset mock to instantly visualize UI metrics
-        // setUsers([
-        //   { id: 'USR-839201', firstName: 'Sarah', lastName: 'Connor', email: 's.connor@sky.school', role: 'Admin', createdAt: '2026-03-15T08:30:00.000Z' },
-        //   { id: 'USR-294012', firstName: 'Marcus', lastName: 'Wright', email: 'mwright@cyber.school', role: 'Manager', createdAt: '2026-05-20T14:15:00.000Z' },
-        //   { id: 'USR-748291', firstName: 'John', lastName: 'Connor', email: 'jconnor@resistance.school', role: 'Standard', createdAt: '2026-06-01T11:05:00.000Z' }
-        // ]);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   return (
     /* Outer canvas wrapper handling theme aesthetics */
@@ -115,24 +109,27 @@ const AdminUsers = () => {
       </div>
 
       {/* Component 3: Unique Data Matrix Row System Display */}
-      <UserTable 
-        users={currentUsers} 
-        onToggleStatus={handleToggleStatus} 
+      <UserTable
+        users={users}
+        loading={loading}
+        onToggleStatus={handleToggleStatus}
       />
-
       {/* Component 4: Dynamic Metrics and Navigation Footer */}
-      <PaginationFooter 
-        totalItems={filteredUsers.length}
+      <PaginationFooter
+        totalItems={totalItems}
+        totalPages={totalPages}
         rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-      />
+       />
 
       {/* Component 5: Overlay Action Form Modal handles record creation pipeline entries */}
       <CreateOperatorModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveUser}
+        user={selectedUser}
       />
       
     </div>

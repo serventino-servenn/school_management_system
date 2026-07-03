@@ -1,7 +1,12 @@
 import React from 'react';
-import { Shield, ShieldAlert, ShieldCheck, Calendar, Mail, User, ShieldCheck as OperationIcon } from 'lucide-react';
+import { useEffect } from 'react';
+import { Shield, ShieldAlert,MoreVertical,Eye,
+   ShieldCheck, Calendar, Mail, User, ShieldCheck as OperationIcon } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 export default function UserTable({ users, loading, onToggleStatus }) {
+    const navigate = useNavigate();
   
   // Format timestamps neatly to display in the data row
   const formatDate = (dateString) => {
@@ -14,10 +19,20 @@ export default function UserTable({ users, loading, onToggleStatus }) {
     });
   };
 
+  const [openMenuId, setOpenMenuId] = useState(null);
+
+  useEffect(() => {
+      const handleClickOutside = () => setOpenMenuId(null);
+      window.addEventListener("click", handleClickOutside);
+      return () => window.removeEventListener("click", handleClickOutside);
+  }, []);
+
   // Extract initials from first and last names for profile layout bubbles
   const getInitials = (firstName, lastName) => {
     return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase() || '??';
   };
+
+
 
   // Loading State - Matches your course component loading styling perfectly
   if (loading) {
@@ -93,14 +108,14 @@ export default function UserTable({ users, loading, onToggleStatus }) {
                       <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         user.role?.toLowerCase() === 'admin'
                           ? 'bg-rose-50 text-rose-700'
-                          : user.role?.toLowerCase() === 'manager'
+                          : user.role?.toLowerCase() === 'teacher'
                           ? 'bg-amber-50 text-amber-700'
                           : 'bg-emerald-50 text-emerald-700'
                       }`}>
                         {user.role?.toLowerCase() === 'admin' && <ShieldAlert size={11} />}
-                        {user.role?.toLowerCase() === 'manager' && <Shield size={11} />}
-                        {user.role?.toLowerCase() === 'standard' && <ShieldCheck size={11} />}
-                        {user.role || 'Standard'}
+                        {user.role?.toLowerCase() === 'teacher' && <Shield size={11} />}
+                        {user.role?.toLowerCase() === 'student' && <ShieldCheck size={11} />}
+                        {user.role || 'Student'}
                       </span>
                     </td>
 
@@ -111,13 +126,54 @@ export default function UserTable({ users, loading, onToggleStatus }) {
 
                     {/* Column 5: Inline Record Operation Control Buttons */}
                     <td className="py-4 px-6 text-right">
-                      <button 
+                      {/* <button 
                         onClick={() => onToggleStatus(user.id)}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 bg-white hover:bg-indigo-900 hover:text-white border border-slate-100 px-3 py-1.5 rounded-xl transition duration-200 shadow-sm shadow-slate-100/50"
                       >
                         <OperationIcon size={13} />
-                        <span>Manage</span>
-                      </button>
+                        <span>Edit</span>
+                      </button> */}
+                          <div className="relative flex justify-end">
+  
+                            <button
+                              onClick={(e) =>{
+                                e.stopPropagation();
+                                setOpenMenuId(openMenuId === user.id ? null : user.id)
+                              }}
+                              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 bg-white hover:bg-indigo-900 hover:text-white border border-slate-100 px-3 py-1.5 rounded-xl transition shadow-sm"
+                            >
+                              <MoreVertical size={14} />
+                              <span>Manage</span>
+                            </button>
+
+                            {openMenuId === user.id && (
+                              <div className="absolute right-0 mt-10 w-44 bg-white border border-slate-100 rounded-xl shadow-lg z-50 overflow-hidden">
+                                
+                                <button
+                                    onClick={() => navigate(`/admin/users/${user.id}`)}
+                                    className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 bg-white hover:bg-indigo-900 hover:text-white border border-slate-100 px-3 py-1.5 rounded-xl transition shadow-sm"
+                                >
+                                    <Eye size={13} />
+                                    <span>View Profile</span>
+                                </button>
+                                <button className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">
+                                  Edit User
+                                </button>
+
+                                <button
+                                  onClick={() => onToggleStatus(user.id)}
+                                  className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50"
+                                >
+                                  Toggle Status
+                                </button>
+
+                                <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                  Delete User
+                                </button>
+
+                              </div>
+                            )}
+                          </div>
                     </td>
                   </tr>
                 ))

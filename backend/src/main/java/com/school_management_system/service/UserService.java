@@ -3,6 +3,9 @@ package com.school_management_system.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,10 +48,19 @@ public class UserService {
     }
 
     //get all users
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(this::mapToUserResponse)
-                .toList();
+    public Page<UserResponse> getAllUsers(int page, int size) {
+
+            Pageable pageable = PageRequest.of(page, size);
+
+            return userRepository.findAll(pageable)
+                    .map(this::mapToUserResponse);
+    }
+
+    //get user by id
+    public UserResponse getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return mapToUserResponse(user);
     }
 
     private UserResponse mapToUserResponse(User user) {

@@ -15,6 +15,7 @@ import CourseForm from './pages/admin/courses/CourseForm';
 import CourseDetails from './pages/admin/courses/CourseDetails';
 // import AdminEnrollments from './pages/AdminEnrollment';
 import AdminAnalytics from './pages/admin/analytics/AdminAnalytics';
+import UserDetails from './pages/admin/users/UserDetails';
 
 //teacher and layouts
 import TeacherLayout from './components/TeacherLayout';
@@ -68,7 +69,11 @@ function App() {
             {/* dashboard */}
             <Route index element={<AdminHome />} /> 
             {/* user management */}
-            <Route path="users" element={<AdminUsers />} />
+            <Route path="users" element={<Outlet />}>
+               <Route index element={<AdminUsers />} />
+               <Route path=":id" element={<UserDetails />} />
+            </Route>
+            {/* <Route path="users" element={<AdminUsers />} /> */}
             {/* course management */}
             {/* Course Management */}
             <Route path="course-management" element={<Outlet />}>

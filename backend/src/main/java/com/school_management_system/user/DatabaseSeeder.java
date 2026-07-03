@@ -21,26 +21,79 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String adminEmail = "admin@eduflow.com";
 
-        // 1. Check if an admin already exists to prevent duplicate entries
-        if (userRepository.findByEmail(adminEmail).isEmpty()) {
-            log.info("No system administrator found. Seeding default admin account...");
+        seedUser(
+                "System",
+                "Admin",
+                "admin@eduflow.com",
+                "12345",
+                Role.ADMIN
+        );
 
-            // 2. Create the seeded admin entity
-            User admin =  User.builder()
-                    .firstName("System")
-                    .lastName("Admin")
-                    .email(adminEmail)
-                    .password(passwordEncoder.encode("12345")) 
-                    .role(Role.ADMIN)
-                    .build();
+        seedUser(
+                "John",
+                "Smith",
+                "john.smith@eduflow.com",
+                "12345",
+                Role.TEACHER
+        );
 
-            // 4. Persist to database
-            userRepository.save(admin);
-            log.info("Default admin account successfully created with email: {}", adminEmail);
-        } else {
-            log.info("Admin account already exists. Skipping database seeding.");
+        seedUser(
+                "Sarah",
+                "Johnson",
+                "sarah.johnson@eduflow.com",
+                "12345",
+                Role.TEACHER
+        );
+
+        seedUser(
+                "Michael",
+                "Brown",
+                "michael.brown@student.eduflow.com",
+                "12345",
+                Role.STUDENT
+        );
+
+        seedUser(
+                "Emma",
+                "Wilson",
+                "emma.wilson@student.eduflow.com",
+                "12345",
+                Role.STUDENT
+        );
+
+        seedUser(
+                "Daniel",
+                "Taylor",
+                "daniel.taylor@student.eduflow.com",
+                "12345",
+                Role.STUDENT
+        );
+    }
+
+
+    private void seedUser(
+        String firstName,
+        String lastName,
+        String email,
+        String password,
+        Role role
+    ) {
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            return;
         }
+
+        User user = User.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .role(role)
+                .build();
+
+        userRepository.save(user);
+
+        log.info("{} account created: {}", role, email);
     }
 }
