@@ -1,11 +1,11 @@
 import React from 'react';
 import { useEffect } from 'react';
-import { Shield, ShieldAlert,MoreVertical,Eye,
+import { Shield, ShieldAlert,MoreVertical,Eye,Activity,
    ShieldCheck, Calendar, Mail, User, ShieldCheck as OperationIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-export default function UserTable({ users, loading, onToggleStatus }) {
+export default function UserTable({ users, loading, onToggleStatus,onEdit}) {
     const navigate = useNavigate();
   
   // Format timestamps neatly to display in the data row
@@ -57,8 +57,8 @@ export default function UserTable({ users, loading, onToggleStatus }) {
               <tr className="border-b border-slate-100 bg-slate-50/50 text-xs font-semibold tracking-wider text-slate-500 uppercase">
                 <th className="py-4 px-6 flex items-center gap-2 font-semibold"><User size={13} className="text-slate-400" /> Operator Identity</th>
                 <th className="py-4 px-6 font-semibold"><Mail size={13} className="inline mr-1 text-slate-400" /> Contact Endpoint</th>
-                <th className="py-4 px-6 font-semibold"><Shield size={13} className="inline mr-1 text-slate-400" /> Clearance Level</th>
-                <th className="py-4 px-6 font-semibold"><Calendar size={13} className="inline mr-1 text-slate-400" /> Provisioned</th>
+                <th className="py-4 px-6 font-semibold"><Shield size={13} className="inline mr-1 text-slate-400" /> Clearance</th>
+                <th className="py-4 px-6 font-semibold"><div className="flex items-center gap-2"><Activity size={13} className="text-slate-400" /><span>Status</span> </div></th>
                 <th className="py-4 px-6 text-right font-semibold">Operations</th>
               </tr>
             </thead>
@@ -118,10 +118,33 @@ export default function UserTable({ users, loading, onToggleStatus }) {
                         {user.role || 'Student'}
                       </span>
                     </td>
+                    <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
 
-                    {/* Column 4: Created Timestamp */}
-                    <td className="py-4 px-6 text-slate-400 text-xs font-mono">
-                      {formatDate(user.createdAt)}
+                            <button
+                                onClick={() => onToggleStatus(user)}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
+                                    user.active ? "bg-emerald-500" : "bg-slate-300"
+                                }`}
+                            >
+                                <span
+                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
+                                        user.active ? "translate-x-6" : "translate-x-1"
+                                    }`}
+                                />
+                            </button>
+
+                            <span
+                                className={`text-xs font-semibold ${
+                                    user.active
+                                        ? "text-emerald-600"
+                                        : "text-slate-500"
+                                }`}
+                            >
+                                {user.active ? "Active" : "Inactive"}
+                            </span>
+
+                        </div>
                     </td>
 
                     {/* Column 5: Inline Record Operation Control Buttons */}
@@ -156,7 +179,9 @@ export default function UserTable({ users, loading, onToggleStatus }) {
                                     <Eye size={13} />
                                     <span>View Profile</span>
                                 </button>
-                                <button className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">
+                                <button 
+                                  onClick={() => onEdit(user)}
+                                  className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50">
                                   Edit User
                                 </button>
 

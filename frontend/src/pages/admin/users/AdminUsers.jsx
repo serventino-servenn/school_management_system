@@ -4,8 +4,9 @@ import UserControlBar from '../../../components/admin/UserControlBar';
 import UserTable from '../../../components/admin/UserTable';
 import PaginationFooter from '../../../components/admin/PaginationFooter';
 import { Users } from 'lucide-react';
-import { getUsers,register} from '../../../services/api';
+import { getUsers,updateUser,register} from '../../../services/api';
 import CreateOperatorModal from '../../../components/admin/CreateOperatorModal';
+import StatusModal from '../../../components/admin/StatusModal';
 
 
 const AdminUsers = () => {
@@ -18,6 +19,8 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+
+   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
 
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -44,25 +47,56 @@ const fetchUsers = async () => {
 };
 
 const handleSaveUser = async (formData) => {
-    if (selectedUser) {
-        await updateUser(selectedUser.id, formData);
-    } else {
-        await createUser(formData);
+    try {
+        if (selectedUser) {
+            console.log("Updating:", formData);
+            console.log(JSON.stringify(formData, null, 2));
+            await updateUser(selectedUser.id, formData);
+        } else {
+            console.log("Creating:", formData);
+            await register(formData);
+        }
+
+        await fetchUsers();
+        handleCloseModal();
+
+    } catch (error) {
+        console.error(error.response?.data);
     }
+};   
 
-    await fetchUsers();
-    handleCloseModal();
-};
+const handleEditUser = (user) => { setSelectedUser(user); setIsModalOpen(true); };
 
-const handleEditUser = (user) => {
+const handleToggleStatus = (user) => {
     setSelectedUser(user);
-    setIsModalOpen(true);
-};     
-
-const handleToggleStatus = (userId) => {
-    console.log(`Toggling status for user ${userId}`);
+    setIsStatusModalOpen(true);
 };
 
+const handleConfirmStatus = async () => {
+    if (!selectedUser) return;
+
+    try {
+        setStatusLoading(true);
+
+        await toggleUserStatus(selectedUser.id);
+
+        await fetchUsers();
+
+        setIsStatusModalOpen(false);
+        setSelectedUser(null);
+
+    } catch (error) {
+        console.error(error);
+
+    } finally {
+        setStatusLoading(false);
+    }
+};
+
+const handleCloseStatusModal = () => {
+    setIsStatusModalOpen(false);
+    setSelectedUser(null);
+};
 
 useEffect(() => {
     const delay = setTimeout(() => {
@@ -113,6 +147,7 @@ useEffect(() => {
         users={users}
         loading={loading}
         onToggleStatus={handleToggleStatus}
+        onEdit={handleEditUser}
       />
       {/* Component 4: Dynamic Metrics and Navigation Footer */}
       <PaginationFooter
@@ -131,6 +166,15 @@ useEffect(() => {
         onSave={handleSaveUser}
         user={selectedUser}
       />
+
+      <StatusModal
+        isOpen={isStatusModalOpen}
+        user={selectedUser}
+        loading={statusLoading}
+        onClose={() => setIsStatusModalOpen(false)}
+        onCancel={handleCloseStatusModal}
+        onConfirm={handleConfirmStatus}
+    />
       
     </div>
   );

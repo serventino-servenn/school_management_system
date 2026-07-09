@@ -43,12 +43,12 @@ const handleSubmit = async (e) => {
     setLoading(true);
 
     try {
-        if (isEditMode) {
-            await onSave(user.id, formData); // UPDATE
-        } else {
-            await onSave(formData); // CREATE
-        }
-
+        // if (isEditMode) {
+        //     await onSave(user.id, formData); // UPDATE
+        // } else {
+        //     await onSave(formData); // CREATE
+        // }
+        await onSave(formData);
         setFormData({
             firstName: '',
             lastName: '',

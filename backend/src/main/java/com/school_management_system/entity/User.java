@@ -1,7 +1,6 @@
 package com.school_management_system.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -43,6 +42,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Builder.Default
+    private boolean active = true;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

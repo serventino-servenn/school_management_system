@@ -65,6 +65,18 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(AccountDisabledException.class)
+    public ResponseEntity<ErrorResponse> handleAccountDisabledException(
+            AccountDisabledException ex) {
+
+        return buildErrorResponse(
+                        HttpStatus.FORBIDDEN,
+                        ex.getMessage(),
+                        null
+                );
+    }
+
+
     // --- Helper Method ---
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message, Object details) {
         ErrorResponse response = ErrorResponse.builder()

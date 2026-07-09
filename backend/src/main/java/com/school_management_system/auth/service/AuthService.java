@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.school_management_system.auth.dto.AuthResponse;
 import com.school_management_system.auth.dto.LoginRequest;
+import com.school_management_system.common.exception.AccountDisabledException;
 import com.school_management_system.entity.User;
 import com.school_management_system.repository.UserRepository;
 
@@ -25,7 +26,10 @@ public class AuthService {
                 .orElseThrow(() ->
                         new RuntimeException("Invalid email or password")
                 );
-
+        if (!user.isActive()) {
+                 throw new AccountDisabledException(
+                        "Your account has been deactivated. Please contact an administrator.");
+        }
         boolean passwordMatches =
                 passwordEncoder.matches(
                         request.password,

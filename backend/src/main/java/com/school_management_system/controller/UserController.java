@@ -13,9 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.school_management_system.dto.UserResponse;
+import com.school_management_system.dto.UserUpdateRequest;
 import com.school_management_system.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -39,6 +45,16 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
+
+   @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserUpdateRequest request) {
+
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
+    
 
     @GetMapping("/public")
     public String publicEndpoint() {

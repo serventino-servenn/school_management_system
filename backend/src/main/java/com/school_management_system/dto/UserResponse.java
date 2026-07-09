@@ -21,4 +21,6 @@ public class UserResponse {
 
     public Role role;
 
+    public boolean active;
+
 }
