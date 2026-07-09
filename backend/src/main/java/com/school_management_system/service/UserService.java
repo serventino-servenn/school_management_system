@@ -64,6 +64,17 @@ public class UserService {
         return mapToUserResponse(updatedUser);
     }
 
+    @Transactional
+    public UserResponse toggleUserStatus(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setActive(!user.isActive());
+
+        return mapToUserResponse(userRepository.save(user));
+    }
+
     //get all users
     public Page<UserResponse> getAllUsers(int page, int size) {
 

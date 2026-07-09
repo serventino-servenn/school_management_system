@@ -1,10 +1,11 @@
 package com.school_management_system.controller;
 
-import java.util.List;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -17,7 +18,6 @@ import com.school_management_system.dto.UserUpdateRequest;
 import com.school_management_system.service.UserService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -54,7 +54,13 @@ public class UserController {
 
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
-    
+
+    @PatchMapping("/{id}/toggle-status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse toggleUserStatus(@PathVariable Long id) {
+        return userService.toggleUserStatus(id);
+    }
+        
 
     @GetMapping("/public")
     public String publicEndpoint() {

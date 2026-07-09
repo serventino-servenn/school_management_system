@@ -5,8 +5,13 @@ export default function StatusConfirmationModal({
     user,
     loading,
     onClose,
+    onCancel,
     onConfirm,
 }) {
+
+    console.log("loading:", loading);
+    console.log("disabled:", loading);
+    
     if (!isOpen || !user) return null;
 
     const isDeactivating = user.active;

@@ -21,6 +21,7 @@ const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+   const [statusLoading, setStatusLoading] = useState(false);
 
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -78,7 +79,7 @@ const handleConfirmStatus = async () => {
     try {
         setStatusLoading(true);
 
-        await toggleUserStatus(selectedUser.id);
+        await handleToggleStatus(selectedUser.id);
 
         await fetchUsers();
 
