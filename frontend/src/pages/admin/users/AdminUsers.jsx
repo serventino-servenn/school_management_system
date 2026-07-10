@@ -4,7 +4,7 @@ import UserControlBar from '../../../components/admin/UserControlBar';
 import UserTable from '../../../components/admin/UserTable';
 import PaginationFooter from '../../../components/admin/PaginationFooter';
 import { Users } from 'lucide-react';
-import { getUsers,updateUser,register} from '../../../services/api';
+import { getUsers,updateUser,register,toggleUserStatus} from '../../../services/api';
 import CreateOperatorModal from '../../../components/admin/CreateOperatorModal';
 import StatusModal from '../../../components/admin/StatusModal';
 
@@ -79,7 +79,7 @@ const handleConfirmStatus = async () => {
     try {
         setStatusLoading(true);
 
-        await handleToggleStatus(selectedUser.id);
+        await toggleUserStatus(selectedUser.id);
 
         await fetchUsers();
 
