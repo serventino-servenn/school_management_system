@@ -5,7 +5,7 @@ import { Shield, ShieldAlert,MoreVertical,Eye,Activity,
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-export default function UserTable({ users, loading, onToggleStatus,onEdit}) {
+export default function UserTable({ users, loading, onToggleStatus,onEdit, onDelete }) {
     const navigate = useNavigate();
   
   // Format timestamps neatly to display in the data row

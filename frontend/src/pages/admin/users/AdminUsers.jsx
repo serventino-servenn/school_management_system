@@ -26,6 +26,9 @@ const AdminUsers = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   // Control Bar Roles Configuration map setup matches your selector components loop expectations
   const rolesList = ['ALL', 'STUDENT', 'TEACHER', 'ADMIN'];
 // );
@@ -94,8 +97,45 @@ const handleConfirmStatus = async () => {
     }
 };
 
+const handleConfirmDelete = async () => {
+    if (!selectedUser) return;
+
+    try {
+        setDeleteLoading(true);
+
+        await deleteUser(selectedUser.id);
+
+        await fetchUsers();
+
+        setIsDeleteModalOpen(false);
+        setSelectedUser(null);
+
+    } catch (error) {
+        console.error(error);
+
+        // Later we'll show this nicely in the modal
+        alert(
+            error.response?.data?.message ||
+            "Unable to delete user."
+        );
+
+    } finally {
+        setDeleteLoading(false);
+    }
+};
+
 const handleCloseStatusModal = () => {
     setIsStatusModalOpen(false);
+    setSelectedUser(null);
+};
+
+const handleDeleteClick = (user) => {
+    setSelectedUser(user);
+    setIsDeleteModalOpen(true);
+};
+
+const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
     setSelectedUser(null);
 };
 
@@ -149,6 +189,7 @@ useEffect(() => {
         loading={loading}
         onToggleStatus={handleToggleStatus}
         onEdit={handleEditUser}
+        onDelete={handleDeleteClick}
       />
       {/* Component 4: Dynamic Metrics and Navigation Footer */}
       <PaginationFooter

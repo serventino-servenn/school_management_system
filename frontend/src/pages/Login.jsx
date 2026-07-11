@@ -35,7 +35,19 @@ const Login = () => {
           navigate('/student');
       }
     } catch (err) {
-      setError(response.data.message || 'Invalid email or password. Please try again.');
+        if (err.response) {
+            // Server responded with 4xx/5xx
+            setError(
+                err.response.data?.message ||
+                "Login failed."
+            );
+        } else if (err.request) {
+            // Request was sent but no response
+            setError("Unable to reach the server. Please try again later.");
+        } else {
+            // Something else happened
+            setError("An unexpected error occurred.");
+        }
     } finally {
       setLoading(false);
     }
