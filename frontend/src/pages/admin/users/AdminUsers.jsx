@@ -4,9 +4,10 @@ import UserControlBar from '../../../components/admin/UserControlBar';
 import UserTable from '../../../components/admin/UserTable';
 import PaginationFooter from '../../../components/admin/PaginationFooter';
 import { Users } from 'lucide-react';
-import { getUsers,updateUser,register,toggleUserStatus} from '../../../services/api';
+import { getUsers,updateUser,register,toggleUserStatus,deleteUser} from '../../../services/api';
 import CreateOperatorModal from '../../../components/admin/CreateOperatorModal';
 import StatusModal from '../../../components/admin/StatusModal';
+import DeleteUserModal from '../../../components/admin/DeleteUserModal';
 
 
 const AdminUsers = () => {
@@ -28,6 +29,7 @@ const AdminUsers = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
 
   // Control Bar Roles Configuration map setup matches your selector components loop expectations
   const rolesList = ['ALL', 'STUDENT', 'TEACHER', 'ADMIN'];
@@ -216,7 +218,15 @@ useEffect(() => {
         onClose={() => setIsStatusModalOpen(false)}
         onCancel={handleCloseStatusModal}
         onConfirm={handleConfirmStatus}
-    />
+      />
+
+      <DeleteUserModal
+          isOpen={isDeleteModalOpen}
+          user={selectedUser}
+          loading={deleteLoading}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+      />
       
     </div>
   );
