@@ -5,7 +5,9 @@ import { Shield, ShieldAlert,MoreVertical,Eye,Activity,
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-export default function UserTable({ users, loading, onToggleStatus,onEdit, onDelete }) {
+export default function UserTable({ 
+  users, loading, onToggleStatus,onEdit, onDelete
+}) {
     const navigate = useNavigate();
   
   // Format timestamps neatly to display in the data row
@@ -174,10 +176,11 @@ export default function UserTable({ users, loading, onToggleStatus,onEdit, onDel
                                 
                                 <button
                                     onClick={() => navigate(`/admin/users/${user.id}`)}
-                                    className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 bg-white hover:bg-indigo-900 hover:text-white border border-slate-100 px-3 py-1.5 rounded-xl transition shadow-sm"
+                                   className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-slate-50"
                                 >
-                                    <Eye size={13} />
-                                    <span>View Profile</span>
+        
+                                   <span>View Profile</span>
+                                   <Eye size={13} />
                                 </button>
                                 <button 
                                   onClick={() => onEdit(user)}
@@ -192,8 +195,14 @@ export default function UserTable({ users, loading, onToggleStatus,onEdit, onDel
                                   Toggle Status
                                 </button>
 
-                                <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                  Delete User
+                                <button
+                                  onClick={() => {
+                                      console.log("Delete clicked", user);
+                                      onDelete(user);
+                                  }}
+                                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                                >
+                                    Delete
                                 </button>
 
                               </div>
