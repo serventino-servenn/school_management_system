@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.school_management_system.entity.Enrollment;
+import com.school_management_system.entity.User;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
@@ -20,6 +21,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     List<Enrollment> findByStudentId(Long studentId);
 
     List<Enrollment> findByCourseId(Long courseId);
+
+    boolean existsByStudent(User student);
 
 
    

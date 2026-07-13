@@ -87,6 +87,17 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    // User Deletion Not Allowed Exception Handler
+    @ExceptionHandler(UserDeletionNotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleUserDeletionNotAllowedException(
+            UserDeletionNotAllowedException ex) {
+        return buildErrorResponse(
+                HttpStatus.FORBIDDEN,
+                ex.getMessage(),
+                null
+        );
+    }
+
 
     // --- Helper Method ---
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message, Object details) {
