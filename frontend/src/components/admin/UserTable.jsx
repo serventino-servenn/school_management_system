@@ -188,12 +188,12 @@ export default function UserTable({
                                   Edit User
                                 </button>
 
-                                <button
+                                {/* <button
                                   onClick={() => onToggleStatus(user.id)}
                                   className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50"
                                 >
                                   Toggle Status
-                                </button>
+                                </button> */}
 
                                 <button
                                   onClick={() => {

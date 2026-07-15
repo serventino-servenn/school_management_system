@@ -3,7 +3,9 @@ package com.school_management_system.controller;
 
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.school_management_system.dto.UserResponse;
@@ -60,32 +63,11 @@ public class UserController {
         return userService.toggleUserStatus(id);
     }
         
-
-    @GetMapping("/public")
-    public String publicEndpoint() {
-        return "Public endpoint accessible to everyone";
-    }
-
-    @GetMapping("/profile")
-    public String profile() {
-        return "Protected profile endpoint";
-    }
-
-    @GetMapping("/admin")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String adminEndpoint() {
-        return "Admin access granted";
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
     }
 
-    @GetMapping("/teacher")
-    @PreAuthorize("hasRole('TEACHER')")
-    public String teacherEndpoint() {
-        return "Teacher access granted";
-    }
-
-    @GetMapping("/student")
-    @PreAuthorize("hasRole('STUDENT')")
-    public String studentEndpoint() {
-        return "Student access granted";
-    }
 }

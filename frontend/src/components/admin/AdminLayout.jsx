@@ -13,13 +13,28 @@ const DashboardLayout = () => {
     navigate('/');
   };
 
-  const menuItems = [
-    { icon: <LayoutDashboard size={20} />,label: "Dashboard", path: "/admin"},
-    {icon: <Users size={20} />,label: "User Management",path: "/admin/users"},
-    { icon: <BookOpen size={20} />,label: "Courses Management",path: "/admin/course-management"},
-    // { icon: <ClipboardList size={20} />,label: "Enrollments",path: "/admin/enrollments"},
-    {icon: <TrendingUp size={20} />,label: "Analytics",path: "/admin/analytics"}
-  ];
+ const menuItems = [
+  {
+    icon: <LayoutDashboard size={20} />,
+    label: "Dashboard",
+    path: "/admin",
+  },
+  {
+    icon: <Users size={20} />,
+    label: "Users",
+    path: "/admin/users",
+  },
+  {
+    icon: <BookOpen size={20} />,
+    label: "Courses",
+    path: "/admin/course-management",
+  },
+  {
+    icon: <TrendingUp size={20} />,
+    label: "Analytics",
+    path: "/admin/analytics",
+  },
+];
 
   return (
     <div className="flex min-h-screen bg-slate-50">
@@ -38,7 +53,7 @@ const DashboardLayout = () => {
         <div className="px-6 py-4">
           <div className="flex items-center gap-2 px-3 py-2 bg-slate-800/60 rounded-xl border border-slate-800 text-xs font-semibold text-indigo-400">
             <Shield size={14} />
-            <span>ADMINISTRATOR MODE</span>
+            <span>ADMIN WORKSPACE</span>
           </div>
         </div>
 

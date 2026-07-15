@@ -29,6 +29,7 @@ const AdminUsers = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
 
   // Control Bar Roles Configuration map setup matches your selector components loop expectations
@@ -104,6 +105,7 @@ const handleConfirmDelete = async () => {
 
     try {
         setDeleteLoading(true);
+        setDeleteError("");
 
         await deleteUser(selectedUser.id);
 
@@ -115,8 +117,7 @@ const handleConfirmDelete = async () => {
     } catch (error) {
         console.error(error);
 
-        // Later we'll show this nicely in the modal
-        alert(
+       setDeleteError(
             error.response?.data?.message ||
             "Unable to delete user."
         );
@@ -132,6 +133,7 @@ const handleCloseStatusModal = () => {
 };
 
 const handleDeleteClick = (user) => {
+     setDeleteError("");
     setSelectedUser(user);
     setIsDeleteModalOpen(true);
 };
@@ -224,6 +226,7 @@ useEffect(() => {
           isOpen={isDeleteModalOpen}
           user={selectedUser}
           loading={deleteLoading}
+           error={deleteError}
           onClose={handleCloseDeleteModal}
           onConfirm={handleConfirmDelete}
       />

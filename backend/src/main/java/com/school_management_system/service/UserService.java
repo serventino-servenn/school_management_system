@@ -172,7 +172,7 @@ public class UserService {
         long adminCount = userRepository.countByRole(Role.ADMIN);
 
         if (adminCount <= 1) {
-            throw new IllegalStateException(
+            throw new UserDeletionNotAllowedException(
                     "The last administrator cannot be deleted."
             );
         }

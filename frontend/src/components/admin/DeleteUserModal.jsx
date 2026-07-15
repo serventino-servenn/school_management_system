@@ -4,6 +4,7 @@ export default function DeleteUserModal({
     isOpen,
     user,
     loading,
+    error,
     onClose,
     onConfirm,
 }) {
@@ -78,6 +79,14 @@ export default function DeleteUserModal({
                         other historical data, deletion may not be allowed.
                         Consider deactivating the account instead.
                     </p>
+
+                    {error && (
+                        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3">
+                            <p className="text-sm text-red-700">
+                                {error}
+                            </p>
+                        </div>
+                    )}
 
                     {/* Footer */}
                     <div className="mt-8 flex justify-end gap-3">

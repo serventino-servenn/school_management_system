@@ -5,13 +5,12 @@ import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.school_management_system.entity.Course;
-import com.school_management_system.entity.Role;
 import com.school_management_system.entity.User;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
     boolean existsByCourseCode(String courseCode);
      long countByCreatedAtAfter(LocalDate dateTime);
-     long countByRole(Role role);
+    //  long countByRole(Role role);
      boolean existsByTeacher(User teacher);     
 }
