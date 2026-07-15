@@ -30,6 +30,7 @@ public class Attendance {
     private User teacher;
 
     @ManyToOne
+    @JoinColumn(name = "course_id") 
     private Course course;
 
     private LocalDate attendanceDate;

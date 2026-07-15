@@ -45,49 +45,40 @@ const AdminHome = () => {
         return <div className="text-center p-8 text-red-500 bg-red-50 border border-red-100 rounded-2xl m-6">{error}</div>;
     }
 
-        const statsConfig = [
+    const statsConfig = [
         {
-            label: "Enrollment Rate",
-            value: metrics?.enrollmentRate?.value ?? "86%",
-            subtext: metrics?.enrollmentRate?.subtext ?? "860 / 1000 seats filled",
-            change: metrics?.enrollmentRate?.change ?? "3.2% from last semester",
-            isNegative: false,
-            icon: <span className="text-2xl">🎓</span>,
+            label: "Total Students",
+            value: metrics?.totalStudents?.total ?? 0,
+            change: metrics?.totalStudents?.change ?? "No updates",
+            icon: <Users size={22} className="text-blue-600" />,
             bg: "bg-blue-50",
             text: "text-emerald-600",
         },
         {
-            label: "System Engagement",
-            value: metrics?.systemEngagement?.value ?? "91%",
-            subtext: metrics?.systemEngagement?.subtext ?? "1,245 active users",
-            change: metrics?.systemEngagement?.change ?? "5% this month",
-            isNegative: false,
-            icon: <span className="text-2xl">📈</span>,
+            label: "Total Teachers",
+            value: metrics?.totalTeachers?.total ?? 0,
+            change: metrics?.totalTeachers?.change ?? "No updates",
+            icon: <Users size={22} className="text-emerald-600" />,
             bg: "bg-emerald-50",
             text: "text-emerald-600",
         },
         {
-            label: "Average GPA",
-            value: metrics?.averageGpa?.value ?? "3.41",
-            subtext: metrics?.averageGpa?.subtext ?? "across 782 students",
-            change: metrics?.averageGpa?.change ?? "0.08 this semester",
-            isNegative: false,
-            icon: <span className="text-2xl">🏆</span>,
+            label: "Total Courses",
+            value: metrics?.totalCourses?.total ?? 0,
+            change: metrics?.totalCourses?.change ?? "No updates",
+            icon: <BookOpen size={22} className="text-violet-600" />,
             bg: "bg-violet-50",
             text: "text-emerald-600",
         },
         {
-            label: "Attendance Rate",
-            value: metrics?.attendanceRate?.value ?? "96%",
-            subtext: metrics?.attendanceRate?.subtext ?? "weekly average",
-            change: metrics?.attendanceRate?.change ?? "1.4% from last week",
-            isNegative: true, // Swaps arrow to dynamic downward trend
-            icon: <span className="text-2xl">✅</span>,
+            label: "Enrollments",
+            value: metrics?.totalEnrollments?.total ?? 0,
+            change: metrics?.totalEnrollments?.change ?? "No updates",
+            icon: <BookOpen size={22} className="text-amber-600" />,
             bg: "bg-amber-50",
-            text: "text-rose-600", // Soft red alert text
+            text: "text-emerald-600",
         }
     ];
-
 
     // Mock function to simulate the Spring Boot AI backend call
     const fetchAiInsights = async () => {

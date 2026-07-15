@@ -13,4 +13,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
      long countByCreatedAtAfter(LocalDate dateTime);
     //  long countByRole(Role role);
      boolean existsByTeacher(User teacher);     
+    //  Course findByCourseCode(String courseCode);
 }
