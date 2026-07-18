@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.school_management_system.dto.UserResponse;
 import com.school_management_system.dto.UserUpdateRequest;
+import com.school_management_system.entity.Role;
 import com.school_management_system.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,15 +34,16 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public Page<UserResponse> getAllUsers(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "5") int size
-    ) {
-        // System.out.println("Fetching users with page: " + page + " and size: " + size);
-        return userService.getAllUsers(page, size);
+    @GetMapping("/users")
+    public ResponseEntity<Page<UserResponse>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) Role role) {
+                
+        Page<UserResponse> users = userService.getAllUsers(page, size, role);
+        return ResponseEntity.ok(users);
     }
+
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")

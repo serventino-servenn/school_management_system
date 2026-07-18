@@ -32,6 +32,13 @@ export const getCourseById = (id) => api.get(`/courses/${id}`);
 export const createCourse = (courseData) => api.post('/courses', courseData);
 export const updateCourse = (id, courseData) => api.put(`/courses/${id}`, courseData);
 export const deleteCourse = (id) => api.delete(`/courses/${id}`);
+export const assignInstructor = (courseId, teacherId) =>
+    api.put(`/courses/${courseId}/instructor/${teacherId}`);
+// Add this to your api.js file alongside your other requests
+// Requests page 0 with a large size window to pull all instructors into the list
+export const getAllTeachers = () => api.get('/users?role=TEACHER&page=0&size=50');
+
+
 
 //users
 export const getUsers = (page, size) => api.get(`/users?page=${page}&size=${size}`);

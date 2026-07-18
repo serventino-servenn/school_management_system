@@ -2,6 +2,8 @@ package com.school_management_system.service;
 
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,13 +89,26 @@ public class UserService {
     }
 
     //get all users
-    public Page<UserResponse> getAllUsers(int page, int size) {
+    // public Page<UserResponse> getAllUsers(int page, int size) {
 
-            Pageable pageable = PageRequest.of(page, size);
+    //         Pageable pageable = PageRequest.of(page, size);
 
-            return userRepository.findAll(pageable)
+    //         return userRepository.findAll(pageable)
+    //                 .map(this::mapToUserResponse);
+    // }
+    // Get all users (with optional role filtering and pagination)
+    public Page<UserResponse> getAllUsers(int page, int size, Role role) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        if (role != null) {
+            return userRepository.findByRole(role, pageable)
                     .map(this::mapToUserResponse);
+        }
+
+        return userRepository.findAll(pageable)
+                .map(this::mapToUserResponse);
     }
+
 
     //get user by id
     public UserResponse getUserById(Long id) {
@@ -118,6 +133,11 @@ public class UserService {
 
         userRepository.delete(user);
     }
+
+    // public List<User> getAllTeachers() {
+    //     // Pass the explicit Enum value (Adjust 'Role.TEACHER' to match your enum's name/case)
+    //     return userRepository.findByRole(Role.TEACHER);
+    // }
 
     private User findUserById(Long id) {
         return userRepository.findById(id)

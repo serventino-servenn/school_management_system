@@ -3,6 +3,9 @@ package com.school_management_system.repository;
 import java.time.LocalDate;
 import java.util.Optional;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable; 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.school_management_system.entity.Role;
@@ -12,4 +15,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     long countByRole(Role role);
     long countByRoleAndCreatedAtAfter(Role role,LocalDate dateTime);
+    Page<User> findByRole(Role role, Pageable pageable);
 }
