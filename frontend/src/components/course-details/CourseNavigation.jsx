@@ -1,11 +1,11 @@
 import { Users, UserCog } from "lucide-react";
 
 export default function CourseNavigation({
-    activeSection,
+     activeSection,
     onSectionChange,
-    studentCount = 0,
-    hasInstructor = false,
+    course
 }) {
+    const hasInstructor = !!course.teacher;
     const navigationItems = [
         {
             id: "students",

@@ -33,7 +33,7 @@ export default function CourseDetails() {
             setLoading(true);
 
             const { data } = await getCourseById(courseId);
-            // console.log("Fetched course data:", id);
+            console.log("Fetched course data:", data);
             setCourse(data);
 
         } catch (error) {
@@ -114,18 +114,24 @@ export default function CourseDetails() {
 
             <CourseHeader
                 course={course}
-                studentCount={course.studentCount ?? 0}
+                // studentCount={course.studentCount ?? 0}
                 onBack={() => navigate("/admin/courses")}
-                onEdit={handleEdit}
+                // onEdit={handleEdit}
                 onAssignInstructor={handleAssignInstructor}
-                onEnrollStudents={handleEnrollStudents}
+                // onEnrollStudents={handleEnrollStudents}
             />
 
-            <CourseNavigation
+            {/* <CourseNavigation
                 activeSection={activeSection}
                 onSectionChange={setActiveSection}
                 studentCount={course.studentCount ?? 0}
                 hasInstructor={!!course.teacher}
+            /> */}
+            <CourseNavigation
+                activeSection={activeSection}
+                onSectionChange={setActiveSection}
+                // studentCount={studentCount}
+                course={course}
             />
 
             <AssignInstructorModal 

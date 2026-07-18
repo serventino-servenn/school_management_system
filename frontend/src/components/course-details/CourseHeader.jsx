@@ -9,15 +9,14 @@ import {
 } from "lucide-react";
 
 export default function CourseHeader({
-    course,
-    studentCount = 0,
-    onBack,
-    onEdit,
-    onAssignInstructor,
-    onEnrollStudents,
+        course,
+        onBack,
+        // onEdit,
+        onAssignInstructor,
+        // onEnrollStudents,
 }) {
     const hasInstructor = !!course.teacher;
-    const hasStudents = studentCount > 0;
+    // const hasStudents = studentCount > 0;
 
     return (
         <div className="space-y-6">
@@ -82,22 +81,15 @@ export default function CourseHeader({
 
                                 {/* Instructor */}
                                 <div>
-
-                                    <p className="text-xs uppercase tracking-wide text-slate-500">
+                                    <p className="text-sm text-slate-500">
                                         Instructor
                                     </p>
 
-                                    {hasInstructor ? (
-                                        <p className="mt-1 font-medium text-slate-900">
-                                            {course.teacher.firstName}{" "}
-                                            {course.teacher.lastName}
-                                        </p>
-                                    ) : (
-                                        <p className="mt-1 text-amber-600">
-                                            No instructor assigned
-                                        </p>
-                                    )}
-
+                                    <p className="font-medium text-slate-900">
+                                        {hasInstructor
+                                            ? course.teacher.name
+                                            : "No instructor assigned"}
+                                    </p>
                                 </div>
 
                                 {/* Students */}
@@ -107,9 +99,9 @@ export default function CourseHeader({
                                         Students
                                     </p>
 
-                                    <p className="mt-1 font-medium text-slate-900">
+                                    {/* <p className="mt-1 font-medium text-slate-900">
                                         {studentCount} enrolled
-                                    </p>
+                                    </p> */}
 
                                 </div>
 
@@ -199,7 +191,7 @@ export default function CourseHeader({
                             {/* Step 3 */}
                             <div className="flex items-center gap-3">
 
-                                {hasStudents ? (
+                                {/* {hasStudents ? (
                                     <CheckCircle2
                                         size={22}
                                         className="text-emerald-500"
@@ -209,7 +201,7 @@ export default function CourseHeader({
                                         size={22}
                                         className="text-slate-400"
                                     />
-                                )}
+                                )} */}
 
                                 <div>
 
