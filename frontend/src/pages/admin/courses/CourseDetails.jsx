@@ -53,14 +53,18 @@ export default function CourseDetails() {
         console.log("Edit course");
     };
 
-    const handleConfirmAssign = async (teacherId) => {
+    const handleConfirmAssign = async (teacher) => {
         try {
             setAssignLoading(true);
-            await assignInstructor(courseId, teacherId);
-            setIsModalOpen(false); // Close on success
-            await fetchCourse();   // Refresh parent data instantly
+
+            await assignInstructor(courseId, teacher.id);
+
+            await fetchCourse();
+
+            setIsModalOpen(false);
+
         } catch (error) {
-            console.error("Assignment failed", error);
+            console.error(error);
         } finally {
             setAssignLoading(false);
         }

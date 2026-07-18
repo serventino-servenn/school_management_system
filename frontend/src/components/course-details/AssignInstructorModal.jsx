@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getAllTeachers} from '../../services/api';
+import {
+    Search,
+    UserCheck,
+    Mail,
+    Circle,
+    CheckCircle2
+} from "lucide-react";
 
 const AssignInstructorModal = ({ isOpen, onClose, onAssign, assignLoading }) => {
     const [teachers, setTeachers] = useState([]);
@@ -32,72 +39,200 @@ const AssignInstructorModal = ({ isOpen, onClose, onAssign, assignLoading }) => 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl space-y-4">
-                
-                {/* Modal Header */}
-                <div className="flex justify-between items-center border-b pb-2">
-                    <h3 className="text-lg font-bold text-gray-900">Select Instructor</h3>
-                    <button 
-                        onClick={onClose}
-                        className="text-gray-500 hover:text-gray-700"
-                        disabled={assignLoading}
-                    >
-                        ✕
-                    </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+
+        {/* Overlay */}
+        <div
+            className="absolute inset-0"
+            onClick={!assignLoading ? onClose : undefined}
+        />
+
+        {/* Modal */}
+        <div className="relative z-10 w-full max-w-2xl rounded-2xl bg-white shadow-2xl border border-slate-200">
+
+            {/* Header */}
+            <div className="flex items-start justify-between p-6 border-b border-slate-200">
+
+                <div>
+                    <h2 className="text-xl font-bold text-slate-900">
+                        Assign Instructor
+                    </h2>
+
+                    <p className="mt-1 text-sm text-slate-500">
+                        Choose a teacher to manage this course.
+                    </p>
                 </div>
 
-                {/* Teachers List Container */}
-                <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
-                    {loadingTeachers ? (
-                        <p className="text-sm text-gray-500 text-center py-4">Loading instructors...</p>
-                    ) : teachers.length === 0 ? (
-                        <p className="text-sm text-gray-500 text-center py-4">No instructors found.</p>
-                    ) : (
-                        teachers.map((teacher) => (
-                            <div
-                                key={teacher.id}
-                                onClick={() => !assignLoading && setSelectedTeacherId(teacher.id)}
-                                className={`p-3 rounded-lg border cursor-pointer transition-colors duration-200 flex justify-between items-center ${
-                                    selectedTeacherId === teacher.id
-                                        ? "border-blue-600 bg-blue-50 text-blue-900 font-medium"
-                                        : "border-gray-200 hover:bg-gray-50 text-gray-700"
-                                }`}
-                            >
-                                <span>{teacher.name}</span>
-                                {selectedTeacherId === teacher.id && (
-                                    <span className="text-blue-600 text-sm font-semibold">✓ Selected</span>
-                                )}
+                <button
+                    onClick={onClose}
+                    disabled={assignLoading}
+                    className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+            {/* Search (We'll make it functional next) */}
+            <div className="relative">
+
+                <Search
+                    size={18}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                />
+
+                <input
+                    type="text"
+                    placeholder="Search instructors..."
+                    className="w-full rounded-xl border border-slate-300 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+
+            </div>
+
+            {/* Teacher List */}
+            <div className="max-h-[420px] overflow-y-auto p-6 space-y-3">
+
+                {loadingTeachers ? (
+
+                    <p className="text-center text-slate-500">
+                        Loading instructors...
+                    </p>
+
+                ) : teachers.length === 0 ? (
+
+                    <div className="py-12 text-center">
+
+                        <p className="text-lg font-semibold text-slate-700">
+                            No instructors found
+                        </p>
+
+                        <p className="mt-2 text-sm text-slate-500">
+                            Create a teacher account before assigning one.
+                        </p>
+
+                    </div>
+
+                ) : (
+
+                    teachers.map((teacher) => (
+
+                        <div
+                            key={teacher.id}
+                            onClick={() =>
+                                !assignLoading &&
+                                setSelectedTeacherId(teacher.id)
+                            }
+                            className={`cursor-pointer rounded-2xl border p-5 transition-all duration-200 ${
+                                selectedTeacherId === teacher.id
+                                    ? "border-blue-600 bg-blue-50 shadow-sm"
+                                    : "border-slate-200 hover:border-blue-300 hover:bg-slate-50"
+                            }`}
+                        >
+
+                            {/* We'll redesign this card next */}
+
+                            <div className="flex items-center justify-between">
+
+                    <div className="flex items-center gap-4">
+
+                        {/* Avatar */}
+
+                        <div
+                            className={`flex h-12 w-12 items-center justify-center rounded-full ${
+                                selectedTeacherId === teacher.id
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-slate-100 text-slate-500"
+                            }`}
+                        >
+                            <UserCheck size={22} />
+                        </div>
+
+                        {/* Teacher Details */}
+
+                        <div>
+
+                            <h4 className="font-semibold text-slate-900">
+                                {teacher.firstName} {teacher.lastName}
+                            </h4>
+
+                            <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
+
+                                <Mail size={14} />
+
+                                {teacher.email}
+
                             </div>
-                        ))
-                    )}
+
+                            <span className="mt-2 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                                Teacher
+                            </span>
+
+                        </div>
+
                 </div>
 
-                {/* Modal Actions */}
-                <div className="flex justify-end space-x-3 pt-2 border-t">
-                    <button
-                        onClick={onClose}
-                        className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                        disabled={assignLoading}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={() => onAssign(selectedTeacherId)}
-                        // Becomes active only when a teacher is selected
-                        disabled={!selectedTeacherId || assignLoading}
-                        className={`px-4 py-2 rounded-md text-white transition-all ${
-                            !selectedTeacherId || assignLoading
-                                ? "bg-gray-300 cursor-not-allowed"
-                                : "bg-blue-600 hover:bg-blue-700 shadow-md"
-                        }`}
-                    >
-                        {assignLoading ? "Assigning..." : "Add"}
-                    </button>
+                {/* Selection Indicator */}
+
+                <div>
+
+                    {selectedTeacherId === teacher.id ? (
+
+                        <CheckCircle2
+                            size={24}
+                            className="text-blue-600"
+                        />
+
+                    ) : (
+
+                        <Circle
+                            size={22}
+                            className="text-slate-300"
+                        />
+
+                    )}
+
                 </div>
 
             </div>
+
+                                    </div>
+
+                                ))
+
+                            )}
+
+                        </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-3 border-t border-slate-200 p-6">
+
+                <button
+                    onClick={onClose}
+                    disabled={assignLoading}
+                    className="rounded-xl border border-slate-300 px-5 py-2.5 font-medium text-slate-600 transition hover:bg-slate-100"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    onClick={() => onAssign(selectedTeacherId)}
+                    disabled={!selectedTeacherId || assignLoading}
+                    className={`rounded-xl px-5 py-2.5 font-semibold text-white transition ${
+                        !selectedTeacherId || assignLoading
+                            ? "cursor-not-allowed bg-slate-300"
+                            : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                >
+                    {assignLoading
+                        ? "Assigning..."
+                        : "Assign Instructor"}
+                </button>
+
+            </div>
+
         </div>
+
+      </div>
     );
 };
 
