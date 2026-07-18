@@ -99,6 +99,16 @@ public class GlobalExceptionHandler {
         );
     }
 
+    //invalid teacher assignment exception handler
+    @ExceptionHandler(InvalidTeacherAssignmentException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidTeacherAssignment(
+            InvalidTeacherAssignmentException ex) {
+        return buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                null
+        );
+    }
 
     // --- Helper Method ---
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message, Object details) {

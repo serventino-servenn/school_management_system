@@ -36,7 +36,14 @@ export const assignInstructor = (courseId, teacherId) =>
     api.put(`/courses/${courseId}/instructor/${teacherId}`);
 // Add this to your api.js file alongside your other requests
 // Requests page 0 with a large size window to pull all instructors into the list
-export const getAllTeachers = () => api.get('/users?role=TEACHER&page=0&size=50');
+// export const getAllTeachers = () => api.get('/users?role=TEACHER&page=0&size=50');
+
+export const getUsersByRole = (
+    role,
+    page = 0,
+    size = 100
+) =>
+    api.get(`/users?role=${role}&page=${page}&size=${size}`);
 
 
 

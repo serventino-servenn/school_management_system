@@ -52,6 +52,18 @@ public class CourseController {
         return ResponseEntity.ok(courseService.updateCourse(id, request));
     }
 
+    @PutMapping("/{courseId}/instructor/{teacherId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CourseResponse> assignInstructor(
+            @PathVariable Long courseId,
+            @PathVariable Long teacherId) {
+
+        CourseResponse response =
+                courseService.assignInstructor(courseId, teacherId);
+
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {

@@ -53,11 +53,11 @@ export default function CourseDetails() {
         console.log("Edit course");
     };
 
-    const handleConfirmAssign = async (teacher) => {
+    const handleConfirmAssign = async (teacherId) => {
         try {
             setAssignLoading(true);
 
-            await assignInstructor(courseId, teacher.id);
+            await assignInstructor(courseId, teacherId);
 
             await fetchCourse();
 

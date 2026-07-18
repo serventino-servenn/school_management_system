@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllTeachers} from '../../services/api';
+import {getUsersByRole} from '../../services/api';
 import {
     Search,
     UserCheck,
@@ -12,6 +12,7 @@ const AssignInstructorModal = ({ isOpen, onClose, onAssign, assignLoading }) => 
     const [teachers, setTeachers] = useState([]);
     const [selectedTeacherId, setSelectedTeacherId] = useState(null);
     const [loadingTeachers, setLoadingTeachers] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
   
     // Fetch teachers list only when the modal is opened
     useEffect(() => {
@@ -20,10 +21,10 @@ const AssignInstructorModal = ({ isOpen, onClose, onAssign, assignLoading }) => 
                 const fetchTeachersList = async () => {
             try {
                 setLoadingTeachers(true);
-                const { data } = await getAllTeachers(); 
+                const { data } = await getUsersByRole("TEACHER");
                 
                 // Notice the ".content" addition here to extract data from Spring's Page structure
-                setTeachers(data.content || []); 
+                setTeachers(data.content); 
             } catch (error) {
                 console.error("Failed to load teachers list", error);
             } finally {
@@ -34,6 +35,12 @@ const AssignInstructorModal = ({ isOpen, onClose, onAssign, assignLoading }) => 
         fetchTeachersList();
         setSelectedTeacherId(null); // Reset selection on open
     }, [isOpen]);
+
+    const filteredTeachers = teachers.filter((teacher) =>
+    `${teacher.firstName} ${teacher.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
 
     // Don't render anything if the modal is hidden
     if (!isOpen) return null;
@@ -82,10 +89,12 @@ const AssignInstructorModal = ({ isOpen, onClose, onAssign, assignLoading }) => 
                 />
 
                 <input
-                    type="text"
-                    placeholder="Search instructors..."
-                    className="w-full rounded-xl border border-slate-300 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                />
+                type="text"
+                placeholder="Search instructors..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
 
             </div>
 
@@ -98,7 +107,7 @@ const AssignInstructorModal = ({ isOpen, onClose, onAssign, assignLoading }) => 
                         Loading instructors...
                     </p>
 
-                ) : teachers.length === 0 ? (
+                ) : filteredTeachers.length === 0 ? (
 
                     <div className="py-12 text-center">
 
@@ -114,7 +123,7 @@ const AssignInstructorModal = ({ isOpen, onClose, onAssign, assignLoading }) => 
 
                 ) : (
 
-                    teachers.map((teacher) => (
+                    filteredTeachers.map((teacher) => (
 
                         <div
                             key={teacher.id}

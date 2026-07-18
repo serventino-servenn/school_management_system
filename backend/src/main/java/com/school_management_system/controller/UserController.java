@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.school_management_system.dto.CourseResponse;
 import com.school_management_system.dto.UserResponse;
 import com.school_management_system.dto.UserUpdateRequest;
 import com.school_management_system.entity.Role;
@@ -34,7 +35,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<Page<UserResponse>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,

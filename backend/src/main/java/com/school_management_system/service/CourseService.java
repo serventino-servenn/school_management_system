@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.school_management_system.common.exception.InvalidTeacherAssignmentException;
 import com.school_management_system.common.exception.ResourceNotFoundException;
 // import com.school_management_system.common.exception.UnauthorizedActionException;
 // import com.school_management_system.dto.CourseRequest;
@@ -12,6 +13,7 @@ import com.school_management_system.dto.CreateCourseRequest;
 import com.school_management_system.dto.StudentSummaryResponse;
 import com.school_management_system.dto.CourseDetailsResponse;
 import com.school_management_system.entity.Course;
+import com.school_management_system.entity.Role;
 // import com.school_management_system.entity.Role;
 import com.school_management_system.entity.User;
 import com.school_management_system.repository.CourseRepository;
@@ -40,7 +42,7 @@ public class CourseService {
 
         applyCourseData(course, request);
 
-        return mapToResponse(courseRepository.save(course));
+        return mapToCourseResponse(courseRepository.save(course));
     }
 
     // Update an existing course
@@ -66,7 +68,7 @@ public class CourseService {
 
         applyCourseData(course, request);
 
-        return mapToResponse(
+        return mapToCourseResponse(
                 courseRepository.save(course)
         );
     }
@@ -75,7 +77,7 @@ public class CourseService {
     public List<CourseResponse> getAll() {
         return courseRepository.findAll()
         .stream()
-        .map(this::mapToResponse)
+        .map(this::mapToCourseResponse)
         .toList();
     }
 
@@ -84,6 +86,35 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
         return mapToDetailsResponse(course);
+    }
+
+    public CourseResponse assignInstructor(Long courseId, Long teacherId) {
+        
+        Course course = courseRepository.findById(courseId)
+        .orElseThrow(() ->
+                new InvalidTeacherAssignmentException("Course not found."));
+        
+        User teacher = userRepository.findById(teacherId)
+        .orElseThrow(() ->
+                new InvalidTeacherAssignmentException("Teacher not found."));
+        
+        if (teacher.getRole() != Role.TEACHER) {
+           throw new InvalidTeacherAssignmentException(
+                "Selected user is not a teacher."
+                );
+        }
+
+        if (!teacher.isActive()) {
+                throw new InvalidTeacherAssignmentException(
+                        "Cannot assign a deactivated teacher."
+                );
+        }
+
+        course.setTeacher(teacher);
+
+        courseRepository.save(course);
+
+        return mapToCourseResponse(course);
     }
     
     private CourseDetailsResponse mapToDetailsResponse(Course course) {
@@ -171,7 +202,7 @@ public class CourseService {
         courseRepository.delete(course);
     }
 
-    private CourseResponse mapToResponse(Course c) {
+    private CourseResponse mapToCourseResponse(Course c) {
         CourseResponse r = new CourseResponse();
 
         r.id = c.getId();

@@ -17,6 +17,7 @@ import com.school_management_system.common.exception.UserDeletionNotAllowedExcep
 import com.school_management_system.dto.UserRequest;
 import com.school_management_system.dto.UserResponse;
 import com.school_management_system.dto.UserUpdateRequest;
+import com.school_management_system.dto.CourseResponse;
 import com.school_management_system.dto.RegistrationResponse;
 import com.school_management_system.entity.Role;
 import com.school_management_system.entity.User;
@@ -88,15 +89,7 @@ public class UserService {
         return mapToUserResponse(userRepository.save(user));
     }
 
-    //get all users
-    // public Page<UserResponse> getAllUsers(int page, int size) {
-
-    //         Pageable pageable = PageRequest.of(page, size);
-
-    //         return userRepository.findAll(pageable)
-    //                 .map(this::mapToUserResponse);
-    // }
-    // Get all users (with optional role filtering and pagination)
+   
     public Page<UserResponse> getAllUsers(int page, int size, Role role) {
         Pageable pageable = PageRequest.of(page, size);
 
