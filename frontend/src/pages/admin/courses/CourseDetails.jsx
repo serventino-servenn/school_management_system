@@ -28,6 +28,9 @@ export default function CourseDetails() {
     const [selectedTeacherId, setSelectedTeacherId] = useState(null);
     const [assignLoading, setAssignLoading] = useState(false);
 
+    const [studentCount, setStudentCount] = useState(0);
+    const [isLoadingStudents, setIsLoadingStudents] = useState(false);
+
     const fetchCourse = async () => {
         try {
             setLoading(true);

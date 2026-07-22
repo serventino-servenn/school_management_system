@@ -34,6 +34,15 @@ export const updateCourse = (id, courseData) => api.put(`/courses/${id}`, course
 export const deleteCourse = (id) => api.delete(`/courses/${id}`);
 export const assignInstructor = (courseId, teacherId) =>
     api.put(`/courses/${courseId}/instructor/${teacherId}`);
+
+export const getCourseStudents = (courseId) =>
+    api.get(`/courses/${courseId}/students`);
+
+export const enrollStudent = (courseId, studentId) =>
+    api.post(`/courses/${courseId}/students/${studentId}`);
+
+export const removeStudent = (courseId, studentId) =>
+    api.delete(`/courses/${courseId}/students/${studentId}`);
 // Add this to your api.js file alongside your other requests
 // Requests page 0 with a large size window to pull all instructors into the list
 // export const getAllTeachers = () => api.get('/users?role=TEACHER&page=0&size=50');
@@ -44,9 +53,6 @@ export const getUsersByRole = (
     size = 100
 ) =>
     api.get(`/users?role=${role}&page=${page}&size=${size}`);
-
-
-
 //users
 export const getUsers = (page, size) => api.get(`/users?page=${page}&size=${size}`);
 export const getUserById = (id) => api.get(`/users/${id}`);

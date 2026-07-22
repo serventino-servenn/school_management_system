@@ -5,13 +5,13 @@ export default function CourseNavigation({
     onSectionChange,
     course
 }) {
-    const hasInstructor = !!course.teacher;
+    const hasInstructor = !!course.teacherId;
     const navigationItems = [
         {
             id: "students",
             label: "Students",
             icon: Users,
-            badge: studentCount,
+            badge: 0
         },
         {
             id: "instructor",

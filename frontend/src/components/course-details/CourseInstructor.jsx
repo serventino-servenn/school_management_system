@@ -10,7 +10,9 @@
             </h2>
 
             <p className="mt-2 text-slate-500">
-                No instructor assigned.
+                {course.teacherId
+                    ? course.teacherName
+                    : "No instructor assigned"}
             </p>
 
         </div>

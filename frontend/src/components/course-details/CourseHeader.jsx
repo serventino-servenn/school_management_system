@@ -14,9 +14,12 @@ export default function CourseHeader({
         // onEdit,
         onAssignInstructor,
         // onEnrollStudents,
-}) {
-    const hasInstructor = !!course.teacher;
-    // const hasStudents = studentCount > 0;
+}) { 
+    const hasInstructor = !! course.teacherId;
+    
+    console.log("course:", course);
+    console.log("teacherId:", course.teacherId);
+    console.log("keys:", Object.keys(course));
 
     return (
         <div className="space-y-6">
@@ -87,7 +90,7 @@ export default function CourseHeader({
 
                                     <p className="font-medium text-slate-900">
                                         {hasInstructor
-                                            ? course.teacher.name
+                                            ? course.teacherName
                                             : "No instructor assigned"}
                                     </p>
                                 </div>
@@ -209,11 +212,11 @@ export default function CourseHeader({
                                         Enroll Students
                                     </p>
 
-                                    <p className="text-sm text-slate-500">
+                                    {/* <p className="text-sm text-slate-500">
                                         {hasStudents
                                             ? "Completed"
                                             : "Pending"}
-                                    </p>
+                                    </p> */}
 
                                 </div>
 
@@ -227,7 +230,7 @@ export default function CourseHeader({
                     <div className="mt-8 flex flex-wrap gap-3">
 
                         <button
-                            onClick={onEdit}
+                            // onClick={onEdit}
                             className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-white hover:bg-blue-700"
                         >
                             <Pencil size={18} />
@@ -245,7 +248,7 @@ export default function CourseHeader({
                         </button>
 
                         <button
-                            onClick={onEnrollStudents}
+                            // onClick={onEnrollStudents}
                             className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-slate-700 hover:bg-slate-50"
                         >
                             <Users size={18} />
