@@ -122,4 +122,15 @@ public class GlobalExceptionHandler {
         
         return new ResponseEntity<>(response, status);
     }
+
+    @ExceptionHandler(InvalidEnrollmentException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidEnrollment(
+            InvalidEnrollmentException ex) {
+
+        return buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                null
+        );
+    }
 }

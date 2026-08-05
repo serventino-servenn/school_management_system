@@ -2,6 +2,7 @@ package com.school_management_system.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -23,6 +24,16 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     List<Enrollment> findByCourseId(Long courseId);
 
     boolean existsByStudent(User student);
+
+    Optional<Enrollment> findByStudentIdAndCourseId(
+        Long studentId,
+        Long courseId
+    );
+
+    // void deleteByStudentIdAndCourseId(
+    //     Long studentId,
+    //     Long courseId
+    // );
 
 
    

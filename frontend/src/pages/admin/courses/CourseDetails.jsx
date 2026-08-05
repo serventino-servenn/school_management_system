@@ -7,13 +7,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import CourseHeader from "../../../components/course-details/CourseHeader";
 import CourseStudents from "../../../components/course-details/CourseStudents";
 import CourseInstructor from "../../../components/course-details/CourseInstructor";
-// import CourseOverview from "../../../components/course-details/CourseOverview";
-// import CourseSettings from "../../../components/course-details/CourseSettings";
 import CourseNavigation from "../../../components/course-details/CourseNavigation";
 import AssignInstructorModal from "../../../components/course-details/AssignInstructorModal";
+import AddStudentModal from "../../../components/course-details/AddStudentModal";
+import UnenrollStudentModal from "../../../components/course-details/UnenrollStudentModal";
 
 
-import { getCourseById,assignInstructor} from "../../../services/api";
+// import { getCourseById,assignInstructor} from "../../../services/api";
+// import { getCourseById,assignInstructor} from "../../../api/api";
+import { getCourseById, assignInstructor,enrollStudents,removeStudent} from "../../../services/api";
 
 export default function CourseDetails() {
     const { courseId } = useParams();
@@ -28,15 +30,22 @@ export default function CourseDetails() {
     const [selectedTeacherId, setSelectedTeacherId] = useState(null);
     const [assignLoading, setAssignLoading] = useState(false);
 
+    const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+    const [enrollLoading, setEnrollLoading] = useState(false);
+
     const [studentCount, setStudentCount] = useState(0);
     const [isLoadingStudents, setIsLoadingStudents] = useState(false);
+
+    const [isUnenrollModalOpen, setIsUnenrollModalOpen] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+
 
     const fetchCourse = async () => {
         try {
             setLoading(true);
 
             const { data } = await getCourseById(courseId);
-            console.log("Fetched course data:", data);
+            // console.log("Fetched course data:", data);
             setCourse(data);
 
         } catch (error) {
@@ -77,11 +86,72 @@ export default function CourseDetails() {
         setIsModalOpen(true);
     }
 
+   const handleEnrollStudents = async (studentIds) => {
+        // console.log("Sending IDs:", studentIds);
+
+        try {
+            setEnrollLoading(true);
+
+            await enrollStudents(courseId, studentIds);
+
+            setIsAddStudentModalOpen(false);
+
+            await fetchCourse();
+
+        } catch (error) {
+            console.error("Enrollment failed", error);
+        } finally {
+            setEnrollLoading(false);
+        }
+    };
+
+    const handleRemoveStudent = (student) => {
+        setSelectedStudent(student);
+        setIsUnenrollModalOpen(true);
+    };
+
+    // const handleRemoveStudent = async (studentId) => {
+    //     try {
+    //         setIsLoadingStudents(true);
+    //           setSelectedStudent(studentId);
+    //          setIsUnenrollModalOpen(true);
+    //         await removeStudent(courseId, studentId);
+
+    //         await fetchCourse();
+
+    //     } catch (error) {
+    //         console.error("Failed to remove student", error);
+    //     } finally {
+    //         setIsLoadingStudents(false);
+    //     }
+    // }
+
+    const handleConfirmUnenroll = async () => {
+            if (!selectedStudent) return;
+
+            try {
+                setEnrollLoading(true);
+
+                await removeStudent(
+                    courseId,
+                    selectedStudent.id
+                );
+
+                setIsUnenrollModalOpen(false);
+                setSelectedStudent(null);
+
+                await fetchCourse();
+
+            } catch (error) {
+                console.error("Failed to remove student", error);
+            } finally {
+                setEnrollLoading(false);
+            }
+    };
+
+   
     
 
-    const handleEnrollStudents = () => {
-        console.log("Enroll students");
-    };
 
     if (loading) {
         return (
@@ -103,7 +173,7 @@ export default function CourseDetails() {
                 </p>
 
                 <button
-                    onClick={() => navigate("/admin/courses")}
+                    onClick={() => navigate("/admin/course_management")}
                     className="mt-6 rounded-xl bg-blue-600 px-5 py-2 text-white hover:bg-blue-700"
                 >
                     Back to Courses
@@ -118,10 +188,11 @@ export default function CourseDetails() {
             <CourseHeader
                 course={course}
                 // studentCount={course.studentCount ?? 0}
-                onBack={() => navigate("/admin/courses")}
+                onBack={() => navigate("/admin/course-management")}
                 // onEdit={handleEdit}
                 onAssignInstructor={handleAssignInstructor}
                 // onEnrollStudents={handleEnrollStudents}
+                 onAddStudents={() => setIsAddStudentModalOpen(true)}
             />
 
             {/* <CourseNavigation
@@ -144,9 +215,29 @@ export default function CourseDetails() {
                 assignLoading={assignLoading}
             />
 
+            <AddStudentModal
+                isOpen={isAddStudentModalOpen}
+                course={course}
+                onClose={() => setIsAddStudentModalOpen(false)}
+                onEnroll={handleEnrollStudents}
+                enrollLoading={enrollLoading}
+            />
+            <UnenrollStudentModal
+                isOpen={isUnenrollModalOpen}
+                student={selectedStudent}
+                course={course}
+                loading={enrollLoading}
+                onClose={() => {
+                    setIsUnenrollModalOpen(false);
+                    setSelectedStudent(null);
+                }}
+                onConfirm={handleConfirmUnenroll}
+            />
+
            {activeSection === "students" && (
                 <CourseStudents
                     course={course}
+                     onRemoveStudent={handleRemoveStudent} 
                 />
             )}
 

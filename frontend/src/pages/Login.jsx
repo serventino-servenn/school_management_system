@@ -19,7 +19,7 @@ const Login = () => {
     try {
      
       const response = await login(formData);
-      console.log('Login response:', response.data); // Debugging line
+      // console.log('Login response:', response.data); // Debugging line
       const { token, role } = response.data;
      
       loginSession(token, role); 

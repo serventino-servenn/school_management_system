@@ -69,7 +69,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:5173")); 
         
         // Allow all standard REST methods
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH","DELETE"));
         
         // Important: Allow the 'Authorization' header so your JWT can pass through
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));

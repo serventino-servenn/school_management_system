@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.school_management_system.dto.CourseResponse;
 import com.school_management_system.dto.CreateCourseRequest;
+import com.school_management_system.dto.EnrollStudentsRequest;
 import com.school_management_system.dto.CourseDetailsResponse;
 import com.school_management_system.service.CourseService;
+import com.school_management_system.service.EnrollmentService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class CourseController {
 
     private final CourseService courseService;
+    private final EnrollmentService enrollmentService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
@@ -68,6 +71,31 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{courseId}/students")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> enrollStudents(
+            @PathVariable Long courseId,
+            @Valid @RequestBody EnrollStudentsRequest request) {
+
+        enrollmentService.enrollStudentsByAdmin(
+                courseId,
+                request.studentIds()
+        );
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{courseId}/students/{studentId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removeStudent(
+            @PathVariable Long courseId,
+            @PathVariable Long studentId) {
+
+        enrollmentService.removeStudentFromCourse(courseId, studentId);
+
         return ResponseEntity.noContent().build();
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.school_management_system.common.exception.InvalidEnrollmentException;
 import com.school_management_system.common.exception.InvalidTeacherAssignmentException;
 import com.school_management_system.common.exception.ResourceNotFoundException;
 // import com.school_management_system.common.exception.UnauthorizedActionException;
@@ -13,6 +14,7 @@ import com.school_management_system.dto.CreateCourseRequest;
 import com.school_management_system.dto.StudentSummaryResponse;
 import com.school_management_system.dto.CourseDetailsResponse;
 import com.school_management_system.entity.Course;
+import com.school_management_system.entity.Enrollment;
 import com.school_management_system.entity.Role;
 // import com.school_management_system.entity.Role;
 import com.school_management_system.entity.User;
@@ -20,6 +22,7 @@ import com.school_management_system.repository.CourseRepository;
 import com.school_management_system.repository.EnrollmentRepository;
 import com.school_management_system.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -116,6 +119,34 @@ public class CourseService {
 
         return mapToCourseResponse(course);
     }
+
+    // Remove the instructor from a course
+     @Transactional
+        public void removeStudentFromCourse(Long courseId, Long studentId) {
+
+        courseRepository.findById(courseId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Course not found."));
+
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Student not found."));
+
+        if (student.getRole() != Role.STUDENT) {
+                throw new InvalidEnrollmentException(
+                        "Selected user is not a student."
+                );
+        }
+
+        Enrollment enrollment = enrollmentRepository
+                .findByStudentIdAndCourseId(studentId, courseId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Student is not enrolled in this course."
+                        ));
+
+        enrollmentRepository.delete(enrollment);
+ }
     
     private CourseDetailsResponse mapToDetailsResponse(Course course) {
 

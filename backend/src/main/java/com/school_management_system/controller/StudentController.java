@@ -59,16 +59,16 @@ public class StudentController {
                 .getStudentAttendance(student.getId());
     }
 
-    @GetMapping("/me/courses")
-    @PreAuthorize("hasRole('STUDENT')")
-    public List<EnrollmentResponse> getMyCourses(
-            @AuthenticationPrincipal
-            CustomUserDetails currentUser
-    ) {
+//     @GetMapping("/me/courses")
+//     @PreAuthorize("hasRole('STUDENT')")
+//     public List<EnrollmentResponse> getMyCourses(
+//             @AuthenticationPrincipal
+//             CustomUserDetails currentUser
+//     ) {
 
-        User student = currentUser.getUser();
+//         User student = currentUser.getUser();
 
-        return enrollmentService
-                .getStudentEnrollments(student.getId());
-    }
+//         return enrollmentService
+//                 .getStudentEnrollments(student.getId());
+//     }
 }

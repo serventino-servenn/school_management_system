@@ -20,9 +20,5 @@ public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public EnrollmentResponse enroll(@RequestBody @Valid EnrollmentRequest request) {
-        return enrollmentService.enroll(request);
-    }
+    
 }

@@ -6,12 +6,13 @@ export default function CourseNavigation({
     course
 }) {
     const hasInstructor = !!course.teacherId;
+    const studentCount = course?.students?.length ?? 0;
     const navigationItems = [
         {
             id: "students",
             label: "Students",
             icon: Users,
-            badge: 0
+            badge: studentCount > 0 ? studentCount : "0",
         },
         {
             id: "instructor",

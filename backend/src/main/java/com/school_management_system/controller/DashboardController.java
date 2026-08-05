@@ -18,30 +18,31 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 
 @RestController
-@RequestMapping("/api/admin/dashboard")
+@RequestMapping("/api/dashboard")
 @RequiredArgsConstructor // Automatically injects DashboardService via constructor
 @Slf4j
-@PreAuthorize("hasRole('ADMIN')") // Secures the endpoint using Role-Based Access Control (RBAC)
+ //Secures the endpoint using Role-Based Access Control (RBAC)
 public class DashboardController {
 
     private final DashboardService dashboardService;
-    private final AiInsightsService aiInsightsService;
+    // private final AiInsightsService aiInsightsService;
 
     @GetMapping("/stats")
+    @PreAuthorize("hasRole('ADMIN')") //
     public ResponseEntity<DashboardStats> getDashboardStats() {
         log.info("REST request to fetch global admin dashboard metrics");
+        return ResponseEntity.ok(dashboardService.getDashboardStats());
+        // DashboardStats stats = dashboardService.getDashboardStats();
         
-        DashboardStats stats = dashboardService.getDashboardStats();
-        
-        return ResponseEntity.ok(stats);
+        // return ResponseEntity.ok(stats);
     }
 
-    @GetMapping("/insights")
-    public ResponseEntity<DashboardInsightsResponse> getInsights() {
+    // @GetMapping("/insights")
+    // public ResponseEntity<DashboardInsightsResponse> getInsights() {
 
-        return ResponseEntity.ok(
-                aiInsightsService.getInsights()
-        );
-    }
+    //     return ResponseEntity.ok(
+    //             aiInsightsService.getInsights()
+    //     );
+    // }
 }
 

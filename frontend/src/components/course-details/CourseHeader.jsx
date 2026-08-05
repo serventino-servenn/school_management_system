@@ -13,13 +13,15 @@ export default function CourseHeader({
         onBack,
         // onEdit,
         onAssignInstructor,
+        onAddStudents,
         // onEnrollStudents,
 }) { 
     const hasInstructor = !! course.teacherId;
+    const studentCount = course?.students?.length ?? 0;
     
-    console.log("course:", course);
-    console.log("teacherId:", course.teacherId);
-    console.log("keys:", Object.keys(course));
+    // console.log("course:", course);
+    // console.log("teacherId:", course.teacherId);
+    // console.log("keys:", Object.keys(course));
 
     return (
         <div className="space-y-6">
@@ -102,9 +104,9 @@ export default function CourseHeader({
                                         Students
                                     </p>
 
-                                    {/* <p className="mt-1 font-medium text-slate-900">
+                                    <p className="mt-1 font-medium text-slate-900">
                                         {studentCount} enrolled
-                                    </p> */}
+                                    </p>
 
                                 </div>
 
@@ -194,7 +196,7 @@ export default function CourseHeader({
                             {/* Step 3 */}
                             <div className="flex items-center gap-3">
 
-                                {/* {hasStudents ? (
+                                {studentCount > 0 ? (
                                     <CheckCircle2
                                         size={22}
                                         className="text-emerald-500"
@@ -204,7 +206,7 @@ export default function CourseHeader({
                                         size={22}
                                         className="text-slate-400"
                                     />
-                                )} */}
+                                )}
 
                                 <div>
 
@@ -212,11 +214,11 @@ export default function CourseHeader({
                                         Enroll Students
                                     </p>
 
-                                    {/* <p className="text-sm text-slate-500">
-                                        {hasStudents
+                                    <p className="text-sm text-slate-500">
+                                        {studentCount > 0
                                             ? "Completed"
                                             : "Pending"}
-                                    </p> */}
+                                    </p>
 
                                 </div>
 
@@ -248,7 +250,7 @@ export default function CourseHeader({
                         </button>
 
                         <button
-                            // onClick={onEnrollStudents}
+                            onClick={onAddStudents}
                             className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-slate-700 hover:bg-slate-50"
                         >
                             <Users size={18} />

@@ -1,64 +1,147 @@
 package com.school_management_system.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.school_management_system.common.exception.InvalidEnrollmentException;
 import com.school_management_system.common.exception.ResourceNotFoundException;
+import com.school_management_system.dto.CourseResponse;
 import com.school_management_system.dto.EnrollmentRequest;
 import com.school_management_system.dto.EnrollmentResponse;
 import com.school_management_system.entity.Course;
 import com.school_management_system.entity.Enrollment;
+import com.school_management_system.entity.EnrollmentStatus;
+import com.school_management_system.entity.Role;
 import com.school_management_system.entity.User;
 import com.school_management_system.repository.CourseRepository;
 import com.school_management_system.repository.EnrollmentRepository;
 import com.school_management_system.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
 
 @Service
 @RequiredArgsConstructor
 public class EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
-    private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
 
-    public EnrollmentResponse enroll(EnrollmentRequest request) {
+    @Transactional
+    public void enrollStudentsByAdmin(Long courseId, List<Long> studentIds) {
 
-        if (enrollmentRepository.existsByStudentIdAndCourseId(
-                request.studentId, request.courseId)) {
-            throw new IllegalStateException("Already enrolled");
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Course not found."));
+
+        List<User> students = userRepository.findAllById(studentIds);
+        List<Enrollment> enrollments = new ArrayList<>();
+
+        for (User student : students) {
+
+            // Ensure the selected user is actually a student
+            if (student.getRole() != Role.STUDENT) {
+                throw new InvalidEnrollmentException(
+                        "Selected user is not a student."
+                );
+            }
+
+            // Skip students already enrolled
+            if (enrollmentRepository.existsByStudentIdAndCourseId(
+                    student.getId(),
+                    courseId)) {
+                continue;
+            }
+
+            Enrollment enrollment = new Enrollment();
+            enrollment.setStudent(student);
+            enrollment.setCourse(course);
+            enrollment.setStatus(EnrollmentStatus.APPROVED);
+
+            enrollments.add(enrollment);
         }
 
-        User student = userRepository.findById(request.studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
-
-        Course course = courseRepository.findById(request.courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
-
-        Enrollment e = new Enrollment();
-        e.setStudent(student);
-        e.setCourse(course);
-        return map(enrollmentRepository.save(e));
-    }
-    public List<EnrollmentResponse> getStudentEnrollments( Long studentId ) {
-
-        return enrollmentRepository
-                .findByStudentId(studentId)
-                .stream()
-                .map(this::map)
-                .toList();
+            enrollmentRepository.saveAll(enrollments);
     }
 
-    private EnrollmentResponse map(Enrollment e) {
-        EnrollmentResponse r = new EnrollmentResponse();
-        r.id = e.getId();
-        r.studentId = e.getStudent().getId();
-        r.studentName = e.getStudent().getFirstName() + " " + e.getStudent().getLastName();
-        r.courseId = e.getCourse().getId();
-        r.courseTitle = e.getCourse().getTitle();
-        return r;
-    }
+
+
+        @Transactional
+        public void removeStudentFromCourse(Long courseId, Long studentId) {
+
+            courseRepository.findById(courseId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Course not found."));
+
+            User student = userRepository.findById(studentId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Student not found."));
+
+            if (student.getRole() != Role.STUDENT) {
+                throw new InvalidEnrollmentException(
+                        "Selected user is not a student."
+                );
+            }
+
+            Enrollment enrollment = enrollmentRepository
+                    .findByStudentIdAndCourseId(studentId, courseId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Student is not enrolled in this course."
+                            ));
+
+            enrollmentRepository.delete(enrollment);
+        }
+
 }
+
+// @Service
+// @RequiredArgsConstructor
+// public class EnrollmentService {
+
+//     private final EnrollmentRepository enrollmentRepository;
+//     private final UserRepository userRepository;
+//     private final CourseRepository courseRepository;
+
+//     public EnrollmentResponse enroll(EnrollmentRequest request) {
+
+//         if (enrollmentRepository.existsByStudentIdAndCourseId(
+//                 request.studentId, request.courseId)) {
+//             throw new IllegalStateException("Already enrolled");
+//         }
+
+//         User student = userRepository.findById(request.studentId)
+//                 .orElseThrow(() -> new ResourceNotFoundException("Student not found"));
+
+//         Course course = courseRepository.findById(request.courseId)
+//                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+
+//         Enrollment e = new Enrollment();
+//         e.setStudent(student);
+//         e.setCourse(course);
+//         return map(enrollmentRepository.save(e));
+//     }
+//     public List<EnrollmentResponse> getStudentEnrollments( Long studentId ) {
+
+//         return enrollmentRepository
+//                 .findByStudentId(studentId)
+//                 .stream()
+//                 .map(this::map)
+//                 .toList();
+//     }
+
+//     private EnrollmentResponse map(Enrollment e) {
+//         EnrollmentResponse r = new EnrollmentResponse();
+//         r.id = e.getId();
+//         r.studentId = e.getStudent().getId();
+//         r.studentName = e.getStudent().getFirstName() + " " + e.getStudent().getLastName();
+//         r.courseId = e.getCourse().getId();
+//         r.courseTitle = e.getCourse().getTitle();
+//         return r;
+//     }
+// }

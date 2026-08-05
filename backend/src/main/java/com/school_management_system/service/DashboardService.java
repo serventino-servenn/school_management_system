@@ -31,29 +31,36 @@ public class DashboardService {
         LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
 
         // Fetch Student Metrics
-        long totalStudents = userRepository.countByRole(Role.STUDENT);
+        long students = userRepository.countByRole(Role.STUDENT);
         long newStudents = userRepository.countByRoleAndCreatedAtAfter(Role.STUDENT, oneWeekAgo);
-        StatMetric studentsDetail = new StatMetric(totalStudents, "+" + newStudents + " this week");
+        StatMetric studentsDetail = new StatMetric(students, "+" + newStudents + " this week");
 
         // Fetch Teacher Metrics
-        long totalTeachers = userRepository.countByRole(Role.TEACHER);
+        long teachers = userRepository.countByRole(Role.TEACHER);
         long newTeachers = userRepository.countByRoleAndCreatedAtAfter(Role.TEACHER, oneMonthAgo);
-        StatMetric teachersDetail = new StatMetric(totalTeachers, "+" + newTeachers + " this month");
+        StatMetric teachersDetail = new StatMetric(teachers, "+" + newTeachers + " this month");
 
         // Fetch Course Metrics
-        long totalCourses = courseRepository.count();
+        long courses = courseRepository.count();
         long newCourses = courseRepository.countByCreatedAtAfter(oneMonthAgo); 
-        StatMetric coursesDetail = new StatMetric(totalCourses, "+" + newCourses + " new courses");
+        StatMetric coursesDetail = new StatMetric(courses, "+" + newCourses + " new courses");
 
         // 2. Extract just the LocalDate portion specifically for the Enrollment entity 👇
         // java.time.LocalDate enrollmentDateThreshold = oneMonthAgo;
 
         // Fetch Enrollment Metrics using the correct LocalDate parameter
-        long totalEnrollments = enrollmentRepository.count();
+        long enrollments = enrollmentRepository.count();
         long newEnrollments = enrollmentRepository.countByCreatedAtAfter(oneMonthAgo); 
-        StatMetric enrollmentsDetail = new StatMetric(totalEnrollments, "+" + newEnrollments + " this month");
+        // StatMetric enrollmentsDetail = new StatMetric(enrollments, "+" + newEnrollments + " this month");
 
-        return new DashboardStats(studentsDetail, teachersDetail, coursesDetail, enrollmentsDetail);
+        // return new DashboardStats(studentsDetail, teachersDetail, coursesDetail, enrollmentsDetail);
+
+        return new DashboardStats(
+                new DashboardStats.StatMetric(students, null),
+                new DashboardStats.StatMetric(teachers, null),
+                new DashboardStats.StatMetric(courses, null),
+                new DashboardStats.StatMetric(enrollments, null)
+        );
     }
 
     // public AiInsightReport generateRealAiInsights() {
