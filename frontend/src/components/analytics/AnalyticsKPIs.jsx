@@ -7,42 +7,43 @@ import {
     TrendingDown,
 } from "lucide-react";
 
-const kpis = [
-    {
-        title: "Students",
-        value: "1,248",
-        change: "+12%",
-        positive: true,
-        icon: GraduationCap,
-        color: "bg-blue-100 text-blue-600",
-    },
-    {
-        title: "Teachers",
-        value: "18",
-        change: "+2",
-        positive: true,
-        icon: Users,
-        color: "bg-emerald-100 text-emerald-600",
-    },
-    {
-        title: "Courses",
-        value: "42",
-        change: "+3",
-        positive: true,
-        icon: BookOpen,
-        color: "bg-amber-100 text-amber-600",
-    },
-    {
-        title: "Enrollments",
-        value: "540",
-        change: "-5%",
-        positive: false,
-        icon: UserCheck,
-        color: "bg-violet-100 text-violet-600",
-    },
-];
 
-export default function AnalyticsKPIs() {
+export default function AnalyticsKPIs({stats}) {
+    const kpis = [
+        {
+            title: "Students",
+            value: stats?.totalStudents?.total ?? 0,
+            change: stats?.totalStudents?.change,
+            positive: true,
+            icon: GraduationCap,
+            color: "bg-blue-100 text-blue-600",
+        },
+        {
+            title: "Teachers",
+            value: stats?.totalTeachers?.total ?? 0,
+            change: stats?.totalTeachers?.change,
+            positive: true,
+            icon: Users,
+            color: "bg-emerald-100 text-emerald-600",
+        },
+        {
+            title: "Courses",
+            value: stats?.totalCourses?.total ?? 0,
+            change: stats?.totalCourses?.change,
+            positive: true,
+            icon: BookOpen,
+            color: "bg-amber-100 text-amber-600",
+        },
+        {
+            title: "Enrollments",
+            value: stats?.totalEnrollments?.total ?? 0,
+            change: stats?.totalEnrollments?.change,
+            positive: true,
+            icon: UserCheck,
+            color: "bg-violet-100 text-violet-600",
+        },
+   ];
+
     return (
         <section className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
 
@@ -86,11 +87,11 @@ export default function AnalyticsKPIs() {
                                                 : "text-red-500"
                                         }`}
                                     >
-                                        {kpi.change}
+                                        {kpi.change ?? "--"}
                                     </span>
 
                                     <span className="text-sm text-slate-400">
-                                        vs last month
+                                        {kpi.change ? "vs last month" : "Current total"}
                                     </span>
 
                                 </div>
