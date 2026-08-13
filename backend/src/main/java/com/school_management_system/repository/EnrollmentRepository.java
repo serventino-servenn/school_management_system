@@ -5,9 +5,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+// import org.springframework.data.repository.query.Param;
+// import org.springframework.data.jpa.repository.Query;
 
+
+import com.school_management_system.dto.TopCourseResponse;
 import com.school_management_system.entity.Enrollment;
 import com.school_management_system.entity.User;
+import org.springframework.data.domain.Pageable;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
@@ -30,10 +37,45 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
         Long courseId
     );
 
+    @Query("""
+        SELECT new com.school_management_system.dto.TopCourseResponse(
+            c.id,
+            c.title,
+            COUNT(e.id)
+        )
+        FROM Enrollment e
+        JOIN e.course c
+        GROUP BY c.id, c.title
+        ORDER BY COUNT(e.id) DESC
+        """)
+    List<TopCourseResponse> findTopCourses(Pageable pageable);
+
+
+    @Query("""
+        SELECT e.createdAt, COUNT(e.id)
+        FROM Enrollment e
+        WHERE e.createdAt >= :startDate
+        GROUP BY e.createdAt
+        ORDER BY e.createdAt
+    """)
+    List<Object[]> getEnrollmentTrend(
+        @Param("startDate") LocalDate startDate
+    );
     // void deleteByStudentIdAndCourseId(
     //     Long studentId,
     //     Long courseId
     // );
+
+    @Query("""
+        SELECT COUNT(e)
+        FROM Enrollment e
+        WHERE e.createdAt >= :startDate
+        AND e.createdAt < :endDate
+    """)
+    long countEnrollmentsByDateRange(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 
 
    

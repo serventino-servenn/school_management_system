@@ -7,8 +7,10 @@ import {
     TrendingDown,
 } from "lucide-react";
 
+import { use, useEffect, useState } from "react";
 
 export default function AnalyticsKPIs({stats}) {
+    console.log("Analytics KPIs Stats:", stats);
     const kpis = [
         {
             title: "Students",

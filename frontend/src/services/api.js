@@ -34,6 +34,8 @@ export const getCourseDistribution = () => api.get("/analytics/course-distributi
 
 export const getEnrollmentTrends = () => api.get("/analytics/enrollment-trend");
 
+
+
 export const getTopCourses = ()=> api.get('/analytics/top-courses');
 export const getInsights = () => api.get('/admin/dashboard/insights');
 //courses

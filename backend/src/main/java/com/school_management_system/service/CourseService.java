@@ -13,6 +13,7 @@ import com.school_management_system.dto.CourseResponse;
 import com.school_management_system.dto.CreateCourseRequest;
 import com.school_management_system.dto.StudentSummaryResponse;
 import com.school_management_system.dto.CourseDetailsResponse;
+import com.school_management_system.dto.CourseDistributionResponse;
 import com.school_management_system.entity.Course;
 import com.school_management_system.entity.Enrollment;
 import com.school_management_system.entity.Role;
@@ -232,6 +233,14 @@ public class CourseService {
 
         courseRepository.delete(course);
     }
+
+    public List<CourseDistributionResponse> getCourseDistribution() {
+
+        return courseRepository.getCourseDistribution();
+
+    }
+
+
 
     private CourseResponse mapToCourseResponse(Course c) {
         CourseResponse r = new CourseResponse();

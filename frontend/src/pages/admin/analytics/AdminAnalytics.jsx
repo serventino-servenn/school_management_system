@@ -35,7 +35,7 @@ export default function AdminAnalytics() {
             setLoading(true);
 
             const { data } = await getDashboardStats();
-
+            
             setStats(data);
 
         } catch (error) {
